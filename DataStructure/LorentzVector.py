@@ -1,0 +1,92 @@
+import math
+
+
+class LorentzVector:
+
+    def __init__(self, t: float = 0.0, x: float = 0.0, y: float = 0.0, z: float = 0.0):
+        self.values = [t, x, y, z]
+
+    def __str__(self) -> str:
+        return "({0}, {1}, {2}, {3})".format(self.values[0], self.values[1], self.values[2], self.values[3])
+
+    def __mul__(self, other) -> float:
+        return self.values[0] * other.values[0] \
+               - self.values[1] * other.values[1] \
+               - self.values[2] * other.values[2] \
+               - self.values[3] * other.values[3]
+
+    def __rmul__(self, other) -> float:
+        return self.__mul__(other)
+
+    def __add__(self, other):
+        return LorentzVector(self.values[0] + other.values[0],
+                             self.values[1] + other.values[1],
+                             self.values[2] + other.values[2],
+                             self.values[3] + other.values[3])
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    @staticmethod
+    def MakeRest():
+        return LorentzVector(1, 0, 0, 0)
+
+    # eta = Pseudo Rapidity
+    # theta = 2 atan(exp(-eta))
+    # p = pt / sin(theta)
+    # E = sqrt(p ^ 2 + m ^ 2)
+    # v = (E, p sin theta cos phi, p sin theta sin phi, p cos theta)
+    @staticmethod
+    def MakeWithRapidity(pseudoRapidity: float, azimuthal: float, pt: float, mass: float = 0):
+        ret = LorentzVector()
+        theta = 2 * math.atan(math.exp(-pseudoRapidity))
+        p = pt / math.sin(theta)
+        ret.values[0] = math.sqrt(p * p + mass * mass)
+        ret.values[1] = pt * math.cos(azimuthal)
+        ret.values[2] = pt * math.sin(azimuthal)
+        ret.values[3] = p * math.cos(theta)
+        return ret
+
+    def V3d(self):
+        return [self.values[1] / self.values[0], self.values[2] / self.values[0], self.values[3] / self.values[0]]
+
+    def P3d(self):
+        return [self.values[1], self.values[2], self.values[3]]
+
+    def Mass(self) -> float:
+        beforeSqrt = self.values[0] * self.values[0] - (self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
+        return math.sqrt(0.0 if beforeSqrt < 0.0 else beforeSqrt)
+
+    def Momentum(self) -> float:
+        return math.sqrt(self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
+
+    def PseudoRapidity(self) -> float:
+        cs = self.values[3] / self.Momentum()
+        return -math.log(math.tan(math.acos(cs)/2))
+
+    def Pt(self) -> float:
+        return math.sqrt(self.values[1] * self.values[1] + self.values[2] * self.values[2])
+
+    def Et(self) -> float:
+        mass = self.Mass()
+        return math.sqrt(self.values[1] * self.values[1] + self.values[2] * self.values[2] + mass * mass)
+
+    # calculate phi
+    def Azimuth(self) -> float:
+        return math.atan2(self.values[2],  self.values[1])
+
+    # calculate Theta
+    def Theta(self):
+        mass = self.Mass()
+        kValue = self.values[0] * self.values[0] - mass
+        if kValue > 0.0:
+            kValue = math.sqrt(kValue)
+        else:
+            return 0
+        if abs(kValue) > abs(self.values[3]):
+            return math.acos(self.values[3] / kValue)
+        else:
+            if self.values[3] > 0.0:
+                return 0
+            else:
+                return math.pi

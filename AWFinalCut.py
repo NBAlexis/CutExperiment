@@ -1,0 +1,458 @@
+import os
+
+from CutAndExport.CorrelationFunctions import *
+from CutAndExport.CutEvent import CutEvents
+from CutAndExport.CutFunctions import *
+from CutAndExport.FilterFunctions import *
+from CutAndExport.Histogram import *
+from CutAndExport.SpecialTest import *
+from Interfaces.LHCOlympics import LoadLHCOlympics
+from Interfaces.LesHouchesEvent import LoadLesHouchesEvent
+
+os.chdir("F:/PyworkingFolder/CutExperiment/_DataFolder")
+
+testEventsm0 = LoadLHCOlympics("wa/features/bgsm2.lhco")
+testEventsm = LoadLHCOlympics("wa/features/bgsm.lhco")
+testEventsm.AddEventSet(testEventsm0)
+testEventm0 = LoadLHCOlympics("wa/features/fm0.lhco")
+testEventm1 = LoadLHCOlympics("wa/features/fm1.lhco")
+testEventm2 = LoadLHCOlympics("wa/features/fm2.lhco")
+testEventm3 = LoadLHCOlympics("wa/features/fm3.lhco")
+testEventm4 = LoadLHCOlympics("wa/features/fm4.lhco")
+testEventm5 = LoadLHCOlympics("wa/features/fm5.lhco")
+testEventm7 = LoadLHCOlympics("wa/features/fm7.lhco")
+testEventt0 = LoadLHCOlympics("wa/features/ft0.lhco")
+testEventt1 = LoadLHCOlympics("wa/features/ft1.lhco")
+testEventt2 = LoadLHCOlympics("wa/features/ft2.lhco")
+testEventt5 = LoadLHCOlympics("wa/features/ft5.lhco")
+testEventt6 = LoadLHCOlympics("wa/features/ft6.lhco")
+testEventt7 = LoadLHCOlympics("wa/features/ft7.lhco")
+
+"""
+print(testEventsm.GetEventCount())
+print(testEventm0.GetEventCount())
+print(testEventm1.GetEventCount())
+print(testEventm2.GetEventCount())
+print(testEventm3.GetEventCount())
+print(testEventm4.GetEventCount())
+print(testEventm5.GetEventCount())
+print(testEventm7.GetEventCount())
+print(testEventt0.GetEventCount())
+print(testEventt1.GetEventCount())
+print(testEventt2.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt6.GetEventCount())
+print(testEventt7.GetEventCount())
+"""
+
+jetNumberCut = JetNumberCut(1, [2])
+photonNumberCut = PhotonNumberCut(1, [1])
+leptonNumberCut = LeptonPMCut(False, 1, 0)
+
+CutEvents(testEventsm, jetNumberCut)
+CutEvents(testEventsm, leptonNumberCut)
+CutEvents(testEventsm, photonNumberCut)
+
+CutEvents(testEventm0, jetNumberCut)
+CutEvents(testEventm0, leptonNumberCut)
+CutEvents(testEventm0, photonNumberCut)
+CutEvents(testEventm1, jetNumberCut)
+CutEvents(testEventm1, leptonNumberCut)
+CutEvents(testEventm1, photonNumberCut)
+CutEvents(testEventm2, jetNumberCut)
+CutEvents(testEventm2, leptonNumberCut)
+CutEvents(testEventm2, photonNumberCut)
+CutEvents(testEventm3, jetNumberCut)
+CutEvents(testEventm3, leptonNumberCut)
+CutEvents(testEventm3, photonNumberCut)
+CutEvents(testEventm4, jetNumberCut)
+CutEvents(testEventm4, leptonNumberCut)
+CutEvents(testEventm4, photonNumberCut)
+CutEvents(testEventm5, jetNumberCut)
+CutEvents(testEventm5, leptonNumberCut)
+CutEvents(testEventm5, photonNumberCut)
+CutEvents(testEventm7, jetNumberCut)
+CutEvents(testEventm7, leptonNumberCut)
+CutEvents(testEventm7, photonNumberCut)
+
+CutEvents(testEventt0, jetNumberCut)
+CutEvents(testEventt0, leptonNumberCut)
+CutEvents(testEventt0, photonNumberCut)
+CutEvents(testEventt1, jetNumberCut)
+CutEvents(testEventt1, leptonNumberCut)
+CutEvents(testEventt1, photonNumberCut)
+CutEvents(testEventt2, jetNumberCut)
+CutEvents(testEventt2, leptonNumberCut)
+CutEvents(testEventt2, photonNumberCut)
+CutEvents(testEventt5, jetNumberCut)
+CutEvents(testEventt5, leptonNumberCut)
+CutEvents(testEventt5, photonNumberCut)
+CutEvents(testEventt6, jetNumberCut)
+CutEvents(testEventt6, leptonNumberCut)
+CutEvents(testEventt6, photonNumberCut)
+CutEvents(testEventt7, jetNumberCut)
+CutEvents(testEventt7, leptonNumberCut)
+CutEvents(testEventt7, photonNumberCut)
+
+print(testEventsm.GetEventCount())
+print(testEventm0.GetEventCount())
+print(testEventm1.GetEventCount())
+print(testEventm2.GetEventCount())
+print(testEventm3.GetEventCount())
+print(testEventm4.GetEventCount())
+print(testEventm5.GetEventCount())
+print(testEventm7.GetEventCount())
+print(testEventt0.GetEventCount())
+print(testEventt1.GetEventCount())
+print(testEventt2.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt6.GetEventCount())
+print(testEventt7.GetEventCount())
+
+# testMjjSM = HistogramWithMinMax(testEventsm, Mjj2Filter, [0, 1500], 50)
+# print(testMjjSM.minMax)
+# print(testMjjSM.listCount)
+# testMjjM = HistogramWithMinMax(testEventm, Mjj2Filter, [0, 1500], 50)
+# print(testMjjM.minMax)
+# print(testMjjM.listCount)
+# testMjjT = HistogramWithMinMax(testEventt, Mjj2Filter, [0, 1500], 50)
+# print(testMjjT.minMax)
+# print(testMjjT.listCount)
+
+"""
+# YJJ
+testYjjSM = HistogramWithMinMax(testEventsm, Yjj2Filter, [0, 10], 50)
+testYjjM0 = HistogramWithMinMax(testEventm0, Yjj2Filter, [0, 10], 50)
+testYjjT0 = HistogramWithMinMax(testEventt0, Yjj2Filter, [0, 10], 50)
+"""
+"""
+# Ptslash
+testYjjSM = HistogramWithMinMax(testEventsm, PtSlashFilter, [0, 500], 50)
+testYjjM0 = HistogramWithMinMax(testEventm0, PtSlashFilter, [0, 500], 50)
+testYjjT0 = HistogramWithMinMax(testEventt0, PtSlashFilter, [0, 500], 50)
+"""
+
+"""
+# Megamma
+testYjjSM = HistogramWithMinMax(testEventsm, Megamma, [0, 3000], 50)
+testYjjM0 = HistogramWithMinMax(testEventm0, Megamma, [0, 3000], 50)
+testYjjT0 = HistogramWithMinMax(testEventt0, Megamma, [0, 3000], 50)
+"""
+
+"""
+# Phi a m
+testYjjSM = HistogramWithMinMax(testEventsm, PhiGammaMissing, [-1, 1], 50)
+testYjjM0 = HistogramWithMinMax(testEventm0, PhiGammaMissing, [-1, 1], 50)
+testYjjT0 = HistogramWithMinMax(testEventt0, PhiGammaMissing, [-1, 1], 50)
+"""
+
+"""
+# Theta e l
+testYjjSM = HistogramWithMinMax(testEventsm, ThetaEGamma, [-1, 1], 50)
+testYjjM0 = HistogramWithMinMax(testEventm0, ThetaEGamma, [-1, 1], 50)
+testYjjT0 = HistogramWithMinMax(testEventt0, ThetaEGamma, [-1, 1], 50)
+"""
+
+"""
+# Phi Lepton Missing
+testYjjSM = HistogramWithMinMax(testEventsm, PhiLeptonMissing, [-1, 1], 50)
+testYjjM0 = HistogramWithMinMax(testEventm0, PhiLeptonMissing, [-1, 1], 50)
+testYjjT0 = HistogramWithMinMax(testEventt0, PhiLeptonMissing, [-1, 1], 50)
+"""
+
+"""
+testYjjSM = HistogramWithMinMax(testEventsm, LpFilter, [0, 1], 50)
+testYjjM0 = HistogramWithMinMax(testEventm0, LpFilter, [0, 1], 50)
+testYjjT0 = HistogramWithMinMax(testEventt0, LpFilter, [0, 1], 50)
+
+print(testYjjSM.listCount)
+print(testYjjM0.listCount)
+print(testYjjT0.listCount)
+"""
+
+"""
+LpTest(testEventsm, "sm.csv")
+LpTest(testEventm0, "m0.csv")
+LpTest(testEventt0, "t0.csv")
+"""
+
+"""
+testYjjSM = HistogramWithMinMax(testEventsm, RadiusA, [0, 1.25], 50)
+testYjjM0 = HistogramWithMinMax(testEventm0, RadiusA, [0, 1.25], 50)
+testYjjM4 = HistogramWithMinMax(testEventm4, RadiusA, [0, 1.25], 50)
+testYjjM7 = HistogramWithMinMax(testEventm7, RadiusA, [0, 1.25], 50)
+"""
+
+testYjjSM = HistogramWithMinMax(testEventsm, RadiusC, [0, 2.0], 50)
+testYjjM0 = HistogramWithMinMax(testEventt2, RadiusC, [0, 2.0], 50)
+
+print(testYjjSM.listCount)
+print(testYjjM0.listCount)
+
+
+vbfCut = StandardVBFCut(True, 0.0, 2.0)
+
+CutEvents(testEventsm, vbfCut)
+CutEvents(testEventm0, vbfCut)
+CutEvents(testEventm1, vbfCut)
+CutEvents(testEventm2, vbfCut)
+CutEvents(testEventm3, vbfCut)
+CutEvents(testEventm4, vbfCut)
+CutEvents(testEventm5, vbfCut)
+CutEvents(testEventm7, vbfCut)
+CutEvents(testEventt0, vbfCut)
+CutEvents(testEventt1, vbfCut)
+CutEvents(testEventt2, vbfCut)
+CutEvents(testEventt5, vbfCut)
+CutEvents(testEventt6, vbfCut)
+CutEvents(testEventt7, vbfCut)
+
+print(testEventsm.GetEventCount())
+print(testEventm0.GetEventCount())
+print(testEventm1.GetEventCount())
+print(testEventm2.GetEventCount())
+print(testEventm3.GetEventCount())
+print(testEventm4.GetEventCount())
+print(testEventm5.GetEventCount())
+print(testEventm7.GetEventCount())
+print(testEventt0.GetEventCount())
+print(testEventt1.GetEventCount())
+print(testEventt2.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt6.GetEventCount())
+print(testEventt7.GetEventCount())
+
+ptMissingCut = PtMissing(1, 70)
+
+CutEvents(testEventsm, ptMissingCut)
+CutEvents(testEventm0, ptMissingCut)
+CutEvents(testEventm1, ptMissingCut)
+CutEvents(testEventm2, ptMissingCut)
+CutEvents(testEventm3, ptMissingCut)
+CutEvents(testEventm4, ptMissingCut)
+CutEvents(testEventm5, ptMissingCut)
+CutEvents(testEventm7, ptMissingCut)
+CutEvents(testEventt0, ptMissingCut)
+CutEvents(testEventt1, ptMissingCut)
+CutEvents(testEventt2, ptMissingCut)
+CutEvents(testEventt5, ptMissingCut)
+CutEvents(testEventt6, ptMissingCut)
+CutEvents(testEventt7, ptMissingCut)
+
+print(testEventsm.GetEventCount())
+print(testEventm0.GetEventCount())
+print(testEventm1.GetEventCount())
+print(testEventm2.GetEventCount())
+print(testEventm3.GetEventCount())
+print(testEventm4.GetEventCount())
+print(testEventm5.GetEventCount())
+print(testEventm7.GetEventCount())
+print(testEventt0.GetEventCount())
+print(testEventt1.GetEventCount())
+print(testEventt2.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt6.GetEventCount())
+print(testEventt7.GetEventCount())
+
+megammaCut = MeGammaCut(1, False, 250)
+
+CutEvents(testEventsm, megammaCut)
+CutEvents(testEventm0, megammaCut)
+CutEvents(testEventm1, megammaCut)
+CutEvents(testEventm2, megammaCut)
+CutEvents(testEventm3, megammaCut)
+CutEvents(testEventm4, megammaCut)
+CutEvents(testEventm5, megammaCut)
+CutEvents(testEventm7, megammaCut)
+CutEvents(testEventt0, megammaCut)
+CutEvents(testEventt1, megammaCut)
+CutEvents(testEventt2, megammaCut)
+CutEvents(testEventt5, megammaCut)
+CutEvents(testEventt6, megammaCut)
+CutEvents(testEventt7, megammaCut)
+
+print(testEventsm.GetEventCount())
+print(testEventm0.GetEventCount())
+print(testEventm1.GetEventCount())
+print(testEventm2.GetEventCount())
+print(testEventm3.GetEventCount())
+print(testEventm4.GetEventCount())
+print(testEventm5.GetEventCount())
+print(testEventm7.GetEventCount())
+print(testEventt0.GetEventCount())
+print(testEventt1.GetEventCount())
+print(testEventt2.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt6.GetEventCount())
+print(testEventt7.GetEventCount())
+
+phiGammaMissing = PhiGammaMissingCut(0, -0.75)
+
+CutEvents(testEventsm, phiGammaMissing)
+CutEvents(testEventm0, phiGammaMissing)
+CutEvents(testEventm1, phiGammaMissing)
+CutEvents(testEventm2, phiGammaMissing)
+CutEvents(testEventm3, phiGammaMissing)
+CutEvents(testEventm4, phiGammaMissing)
+CutEvents(testEventm5, phiGammaMissing)
+CutEvents(testEventm7, phiGammaMissing)
+CutEvents(testEventt0, phiGammaMissing)
+CutEvents(testEventt1, phiGammaMissing)
+CutEvents(testEventt2, phiGammaMissing)
+CutEvents(testEventt5, phiGammaMissing)
+CutEvents(testEventt6, phiGammaMissing)
+CutEvents(testEventt7, phiGammaMissing)
+
+print(testEventsm.GetEventCount())
+print(testEventm0.GetEventCount())
+print(testEventm1.GetEventCount())
+print(testEventm2.GetEventCount())
+print(testEventm3.GetEventCount())
+print(testEventm4.GetEventCount())
+print(testEventm5.GetEventCount())
+print(testEventm7.GetEventCount())
+print(testEventt0.GetEventCount())
+print(testEventt1.GetEventCount())
+print(testEventt2.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt6.GetEventCount())
+print(testEventt7.GetEventCount())
+
+thetaGammaLepton = ThetaGammaLeptonCut(0, False, -0.5)
+
+CutEvents(testEventsm, thetaGammaLepton)
+CutEvents(testEventm0, thetaGammaLepton)
+CutEvents(testEventm1, thetaGammaLepton)
+CutEvents(testEventm2, thetaGammaLepton)
+CutEvents(testEventm3, thetaGammaLepton)
+CutEvents(testEventm4, thetaGammaLepton)
+CutEvents(testEventm5, thetaGammaLepton)
+CutEvents(testEventm7, thetaGammaLepton)
+CutEvents(testEventt0, thetaGammaLepton)
+CutEvents(testEventt1, thetaGammaLepton)
+CutEvents(testEventt2, thetaGammaLepton)
+CutEvents(testEventt5, thetaGammaLepton)
+CutEvents(testEventt6, thetaGammaLepton)
+CutEvents(testEventt7, thetaGammaLepton)
+
+print(testEventsm.GetEventCount())
+print(testEventm0.GetEventCount())
+print(testEventm1.GetEventCount())
+print(testEventm2.GetEventCount())
+print(testEventm3.GetEventCount())
+print(testEventm4.GetEventCount())
+print(testEventm5.GetEventCount())
+print(testEventm7.GetEventCount())
+print(testEventt0.GetEventCount())
+print(testEventt1.GetEventCount())
+print(testEventt2.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt6.GetEventCount())
+print(testEventt7.GetEventCount())
+
+lmCut = PhiLeptonMissingCut(1, False, 0.5)
+
+CutEvents(testEventsm, lmCut)
+CutEvents(testEventm0, lmCut)
+CutEvents(testEventm1, lmCut)
+CutEvents(testEventm2, lmCut)
+CutEvents(testEventm3, lmCut)
+CutEvents(testEventm4, lmCut)
+CutEvents(testEventm5, lmCut)
+CutEvents(testEventm7, lmCut)
+CutEvents(testEventt0, lmCut)
+CutEvents(testEventt1, lmCut)
+CutEvents(testEventt2, lmCut)
+CutEvents(testEventt5, lmCut)
+CutEvents(testEventt6, lmCut)
+CutEvents(testEventt7, lmCut)
+
+print(testEventsm.GetEventCount())
+print(testEventm0.GetEventCount())
+print(testEventm1.GetEventCount())
+print(testEventm2.GetEventCount())
+print(testEventm3.GetEventCount())
+print(testEventm4.GetEventCount())
+print(testEventm5.GetEventCount())
+print(testEventm7.GetEventCount())
+print(testEventt0.GetEventCount())
+print(testEventt1.GetEventCount())
+print(testEventt2.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt6.GetEventCount())
+print(testEventt7.GetEventCount())
+
+"""
+testMTsm = HistogramWithMinMax(testEventsm, Megamma, [0, 3000], 50)
+print(testMTsm.minMax)
+print(testMTsm.listCount)
+testMTm = HistogramWithMinMax(testEventm, Megamma, [0, 3000], 50)
+print(testMTm.minMax)
+print(testMTm.listCount)
+testMTt = HistogramWithMinMax(testEventt, Megamma, [0, 3000], 50)
+print(testMTt.minMax)
+print(testMTt.listCount)
+
+
+testMTsm = HistogramWithMinMax(testEventsm, PhiGammaMissing, [0, 1], 50)
+print(testMTsm.minMax)
+print(testMTsm.listCount)
+testMTm = HistogramWithMinMax(testEventm, PhiGammaMissing, [0, 1], 50)
+print(testMTm.minMax)
+print(testMTm.listCount)
+testMTt = HistogramWithMinMax(testEventt, PhiGammaMissing, [0, 1], 50)
+print(testMTt.minMax)
+print(testMTt.listCount)
+
+testMTsm = HistogramWithMinMax(testEventsm, PtSlashFilter, [0, 1000], 50)
+print(testMTsm.minMax)
+print(testMTsm.listCount)
+testMTm = HistogramWithMinMax(testEventm, PtSlashFilter, [0, 1000], 50)
+print(testMTm.minMax)
+print(testMTm.listCount)
+testMTt = HistogramWithMinMax(testEventt, PtSlashFilter, [0, 1000], 50)
+print(testMTt.minMax)
+print(testMTt.listCount)
+
+# print("=======================================")
+# LpTest(testEventsm)
+# print("=======================================")
+# LpTest(testEventm)
+# print("=======================================")
+# LpTest(testEventt)
+# print("=======================================")
+testLpCsm = HistogramWithMinMax(testEventsm, LpCornerMiddle, [0, 2], 50)
+print(testLpCsm.minMax)
+print(testLpCsm.listCount)
+testLpCm = HistogramWithMinMax(testEventm, LpCornerMiddle, [0, 2], 50)
+print(testLpCm.minMax)
+print(testLpCm.listCount)
+
+
+
+CutEvents(testEventsm, megammaCut)
+CutEvents(testEventm, megammaCut)
+CutEvents(testEventt, megammaCut)
+
+print(testEventsm.GetEventCount())
+print(testEventm.GetEventCount())
+print(testEventt.GetEventCount())
+
+ptMissingCut = PtMissing(1, 75)
+CutEvents(testEventsm, ptMissingCut)
+CutEvents(testEventm, ptMissingCut)
+CutEvents(testEventt, ptMissingCut)
+
+print(testEventsm.GetEventCount())
+print(testEventm.GetEventCount())
+print(testEventt.GetEventCount())
+
+phiGammaMissing = PhiGammaMissingCut(1, 0.8)
+CutEvents(testEventsm, phiGammaMissing)
+CutEvents(testEventm, phiGammaMissing)
+CutEvents(testEventt, phiGammaMissing)
+
+print(testEventsm.GetEventCount())
+print(testEventm.GetEventCount())
+print(testEventt.GetEventCount())
+"""
