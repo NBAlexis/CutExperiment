@@ -10,12 +10,12 @@ from Interfaces.LesHouchesEvent import LoadLesHouchesEvent
 
 os.chdir("F:/PyworkingFolder/CutExperiment/_DataFolder")
 
-testEventsm = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/aaww_smbg.lhco")
-testEvent1 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/maxsignal/alpha1.lhco")
-testEvent2 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/maxsignal/alpha2.lhco")
-testEvent3 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/maxsignal/alpha3.lhco")
-testEvent4 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/maxsignal/alpha4.lhco")
-testEvent5 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/maxsignal/alpha5.lhco")
+testEventsm = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/newmaxsignal/bgsm.lhco")
+testEvent1 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/newmaxsignal/alpha0.lhco")
+testEvent2 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/newmaxsignal/alpha1.lhco")
+testEvent3 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/newmaxsignal/alpha2.lhco")
+testEvent4 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/newmaxsignal/alpha3.lhco")
+testEvent5 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/newmaxsignal/alpha4.lhco")
 
 print(testEventsm.GetEventCount())
 print(testEvent1.GetEventCount())
@@ -27,24 +27,40 @@ print(testEvent5.GetEventCount())
 jetNumberCut = JetNumberCut(1, [2])
 leptonNumberCut = LeptonPMCut(False, 1, 1)
 
+mw=80.379
+mz=91.1876
+cw=0.972901
+sw=0.23122
+vev=246
+e2=0.0934761 # sqrt{ 4 pi alpha} for alpha = 1/134
+# shatCutAlpha1 = SHatCutWW(1000.0 * math.sqrt(32 * math.pi * mw * mw / 0.12))
+# shatCutAlpha2 = SHatCutWW(1000.0 * math.sqrt(128 * math.pi * mw * mw / 0.2))
+# shatCutAlpha3 = SHatCutWW(1.0e6 * math.sqrt(16 * math.pi / 2.9))
+# shatCutAlpha4 = SHatCutWW(1.0e6 * math.sqrt(64 * math.pi / 5.9))
+# shatCutAlpha5 = SHatCutWW(1.0e6 * math.sqrt(48 * math.pi / 2.3))
 
 CutEvents(testEventsm, jetNumberCut)
 CutEvents(testEventsm, leptonNumberCut)
 
 CutEvents(testEvent1, jetNumberCut)
 CutEvents(testEvent1, leptonNumberCut)
+# CutEvents(testEvent1, shatCutAlpha1)
 
 CutEvents(testEvent2, jetNumberCut)
 CutEvents(testEvent2, leptonNumberCut)
+# CutEvents(testEvent2, shatCutAlpha2)
 
 CutEvents(testEvent3, jetNumberCut)
 CutEvents(testEvent3, leptonNumberCut)
+# CutEvents(testEvent3, shatCutAlpha3)
 
 CutEvents(testEvent4, jetNumberCut)
 CutEvents(testEvent4, leptonNumberCut)
+# CutEvents(testEvent4, shatCutAlpha4)
 
 CutEvents(testEvent5, jetNumberCut)
 CutEvents(testEvent5, leptonNumberCut)
+# CutEvents(testEvent5, shatCutAlpha5)
 
 
 print(testEventsm.GetEventCount())
@@ -54,7 +70,7 @@ print(testEvent3.GetEventCount())
 print(testEvent4.GetEventCount())
 print(testEvent5.GetEventCount())
 
-vbfCut = StandardVBFCut(True, 180.0, 2.3)
+vbfCut = StandardVBFCut(True, 0.0, 2.3)
 
 testMjj = HistogramWithMinMax(testEventsm, Mjj2Filter, [0, 1500], 50)
 print(testMjj.minMax)

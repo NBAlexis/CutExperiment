@@ -14,8 +14,10 @@ def AllMomentumSum(event: EventSample, debuged: int) -> LorentzVector:
             if debuged < 10:
                 print(particle.momentum)
     if debuged < 10:
-        print(LorentzVector(13000 - momentumSum.values[0], -momentumSum.values[1], -momentumSum.values[2], -momentumSum.values[3]))
-    return LorentzVector(13000 - momentumSum.values[0], -momentumSum.values[1], -momentumSum.values[2], -momentumSum.values[3])
+        print(LorentzVector(13000 - momentumSum.values[0], -momentumSum.values[1], -momentumSum.values[2],
+                            -momentumSum.values[3]))
+    return LorentzVector(13000 - momentumSum.values[0], -momentumSum.values[1], -momentumSum.values[2],
+                         -momentumSum.values[3])
 
 
 def WRestTest(eventSet: EventSet):
@@ -90,3 +92,46 @@ def LpTest(eventSet: EventSet, fileName: str):
     plt.show()
 
 
+def CorrelationData(eventSet: EventSet, function1, function2, dim1, dim2, range1, range2):
+    """
+    Return a two dimension array
+    """
+    retArray = [[0 for i in range(dim1)] for j in range(dim2)]
+    sep1 = (range1[1] - range1[0]) / dim1;
+    sep2 = (range2[1] - range2[0]) / dim2;
+    xList = []
+    yList = []
+    minMaxSet = []
+    for event in eventSet.events:
+        v1 = function1(event)
+        v2 = function2(event)
+        if 0 == len(minMaxSet):
+            minMaxSet = [v1, v1, v2, v2]
+        else:
+            if v1 < minMaxSet[0]:
+                minMaxSet[0] = v1
+            if v1 > minMaxSet[1]:
+                minMaxSet[1] = v1
+            if v2 < minMaxSet[2]:
+                minMaxSet[2] = v2
+            if v2 > minMaxSet[3]:
+                minMaxSet[3] = v2
+        if range1[0] <= v1 <= range1[1] and range2[0] <= v2 <= range2[1]:
+            xList.append(v1)
+            yList.append(v2)
+            idxX = math.floor((v1 - range1[0]) / sep1)
+            if idxX >= dim1:
+                idxX = dim1 - 1
+            if idxX < 0:
+                idxX = 0
+            idxY = math.floor((v2 - range2[0]) / sep2)
+            if idxY >= dim1:
+                idxY = dim1 - 1
+            if idxY < 0:
+                idxY = 0
+            retArray[idxX][idxY] = retArray[idxX][idxY] + 1
+    print(retArray)
+    print("min v1:", minMaxSet[0], "max v1:", minMaxSet[1], " min v2:", minMaxSet[2], " max v2:", minMaxSet[3])
+    import matplotlib.pyplot as plt
+    plt.hist2d(xList, yList, [dim1, dim2])
+    plt.show()

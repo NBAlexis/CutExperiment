@@ -27,6 +27,12 @@ class LorentzVector:
     def __radd__(self, other):
         return self.__add__(other)
 
+    def __sub__(self, other):
+        return LorentzVector(self.values[0] - other.values[0],
+                             self.values[1] - other.values[1],
+                             self.values[2] - other.values[2],
+                             self.values[3] - other.values[3])
+
     @staticmethod
     def MakeRest():
         return LorentzVector(1, 0, 0, 0)
@@ -66,6 +72,12 @@ class LorentzVector:
 
     def Pt(self) -> float:
         return math.sqrt(self.values[1] * self.values[1] + self.values[2] * self.values[2])
+
+    def ToPt(self):
+        return LorentzVector(self.values[0], self.values[1], self.values[2], 0.0)
+
+    def Scale(self, scale : float):
+        return LorentzVector(self.values[0] * scale, self.values[1] * scale, self.values[2] * scale, self.values[3] * scale)
 
     def Et(self) -> float:
         mass = self.Mass()

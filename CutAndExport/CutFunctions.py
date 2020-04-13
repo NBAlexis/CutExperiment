@@ -1,5 +1,6 @@
 import math
 
+from CutAndExport.FilterFunctions import *
 from DataStructure.Constants import *
 from DataStructure.EventSample import EventSample
 from DataStructure.LorentzVector import LorentzVector
@@ -58,6 +59,7 @@ class LeptonPMCut:
     for example LeptonPMCut(False, 1, -1) only check e+, mu+ = 1
     LeptonPMCut(False, 1, 0) check e+, mu+ = 1 and e- mu- = 0
     """
+
     def __init__(self, countTau: bool, positive: int, negative: int):
         self.countTau = countTau
         self.positive = positive
@@ -73,7 +75,8 @@ class LeptonPMCut:
                         negativeCount = negativeCount + 1
                     else:
                         positiveCount = positiveCount + 1
-        return not ((positiveCount == self.positive or self.positive < 0) and (negativeCount == self.negative or self.negative < 0))
+        return not ((positiveCount == self.positive or self.positive < 0) and (
+                negativeCount == self.negative or self.negative < 0))
 
 
 class ETMissingCount:
@@ -81,6 +84,7 @@ class ETMissingCount:
     If cutType = 0, cut ETMissing > cutValue
     If cutType = 1, cut ETMissing < cutValue
     """
+
     def __init__(self, cutType: int, cutValue: float):
         self.cutType = cutType
         self.cutValue = cutValue
@@ -137,6 +141,7 @@ class LeptonPMDotCut:
     If cutType = 0, cut lepton dot > cutValue
     If cutType = 1, cut lepton dot < cutValue
     """
+
     def __init__(self, cutType: int, countTau: bool, cutValue):
         self.cutType = cutType
         self.cutValue = cutValue
@@ -165,6 +170,7 @@ class MolCut:
     If cutType = 0, cut mol > cutValue
     If cutType = 1, cut mol < cutValue
     """
+
     def __init__(self, cutType: int, countTau: bool, cutValue: float):
         self.cutType = cutType
         self.cutValue = cutValue
@@ -200,6 +206,7 @@ class MeGammaCut:
     If cutType = 0, cut mol > cutValue
     If cutType = 1, cut mol < cutValue
     """
+
     def __init__(self, cutType: int, countTau: bool, cutValue: float):
         self.cutType = cutType
         self.cutValue = cutValue
@@ -232,7 +239,8 @@ class PtMissing:
     If cutType = 0, cut mol > cutValue
     If cutType = 1, cut mol < cutValue
     """
-    def __init__(self, cutType: int, cutValue : float):
+
+    def __init__(self, cutType: int, cutValue: float):
         self.cutType = cutType
         self.cutValue = cutValue
 
@@ -258,6 +266,7 @@ class PhiGammaMissingCut:
     If cutType = 0, cut mol > cutValue
     If cutType = 1, cut mol < cutValue
     """
+
     def __init__(self, cutType: int, cutValue: float):
         self.cutType = cutType
         self.cutValue = cutValue
@@ -286,6 +295,7 @@ class ThetaGammaLeptonCut:
     If cutType = 0, cut mol > cutValue
     If cutType = 1, cut mol < cutValue
     """
+
     def __init__(self, cutType: int, countTau: bool, cutValue: float):
         self.cutType = cutType
         self.cutValue = cutValue
@@ -317,6 +327,7 @@ class PhiLeptonMissingCut:
     If cutType = 0, cut mol > cutValue
     If cutType = 1, cut mol < cutValue
     """
+
     def __init__(self, cutType: int, countTau: bool, cutValue: float):
         self.cutType = cutType
         self.cutValue = cutValue
@@ -345,6 +356,7 @@ class RadiusACut:
     If cutType = 0, cut mol > cutValue
     If cutType = 1, cut mol < cutValue
     """
+
     def __init__(self, cutType: int, cutValue: float, radiusType: int):
         self.cutType = cutType
         self.cutValue = cutValue
@@ -356,7 +368,7 @@ class RadiusACut:
         largestEa = -1.0
         largestPhotonIdx = -1
         for i in range(len(eventSample.particles)):
-            if 0 == eventSample.particles[i].particleType:
+            if ParticleType.Photon == eventSample.particles[i].particleType:
                 if eventSample.particles[i].momentum.values[0] > largestEa:
                     largestEa = eventSample.particles[i].momentum.values[0]
                     largestPhotonIdx = i
@@ -375,7 +387,7 @@ class RadiusACut:
         thetaPhoton = math.cos(momentumPhoton.Theta())
         ra = 0
         if 1 == self.radiusType:
-            ra = (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + (0.5 - abs(lp - 0.5)) * (0.5 - abs(lp - 0.5))
+            ra = (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + 4.0 * (0.5 - abs(lp - 0.5)) * (0.5 - abs(lp - 0.5))
         elif 2 == self.radiusType:
             ra = (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + lp * lp
         elif 3 == self.radiusType:
@@ -383,3 +395,31 @@ class RadiusACut:
         if 0 == self.cutType:
             return ra > self.cutValue
         return ra < self.cutValue
+
+
+class SHatCut2:
+    """
+    shat = (p_nu + p_l + p_a)^2 < (p_nu + p_l + p_a)_T^2
+    so if (p_nu + p_l + p_a)_T^2 < cut_value, then shat is sure to be < cut_value
+    """
+
+    def __init__(self, cutValue: float):
+        self.cutValue = cutValue
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        pAll2 = SHatAW(eventSample)
+        return pAll2 > self.cutValue
+
+
+class SHatCutWW:
+    """
+    pW + pW = pl + pl + pnu + pnu
+    so if (p_nu + p_l + p_a)_T^2 < cut_value, then shat is sure to be < cut_value
+    """
+
+    def __init__(self, cutValue: float):
+        self.cutValue = cutValue
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        shatWW = SHatWW(eventSample)
+        return shatWW > self.cutValue

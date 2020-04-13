@@ -61,7 +61,7 @@ print(testEventm4.GetEventCount())
 print(testEventm5.GetEventCount())
 print(testEventm7.GetEventCount())
 
-vbfCut = StandardVBFCut(True, 0.0, 2.0)
+vbfCut = StandardVBFCut(True, 200.0, 2.5)
 
 CutEvents(testEventsm, vbfCut)
 CutEvents(testEventm0, vbfCut)
@@ -82,38 +82,7 @@ print(testEventm4.GetEventCount())
 print(testEventm5.GetEventCount())
 print(testEventm7.GetEventCount())
 
-ptMissingCut = PtMissing(1, 120)
 
-CutEvents(testEventsm, ptMissingCut)
-CutEvents(testEventm0, ptMissingCut)
-CutEvents(testEventm1, ptMissingCut)
-CutEvents(testEventm2, ptMissingCut)
-CutEvents(testEventm3, ptMissingCut)
-CutEvents(testEventm4, ptMissingCut)
-CutEvents(testEventm5, ptMissingCut)
-CutEvents(testEventm7, ptMissingCut)
-
-
-print(testEventsm.GetEventCount())
-print(testEventm0.GetEventCount())
-print(testEventm1.GetEventCount())
-print(testEventm2.GetEventCount())
-print(testEventm3.GetEventCount())
-print(testEventm4.GetEventCount())
-print(testEventm5.GetEventCount())
-print(testEventm7.GetEventCount())
-
-
-megammaCut = MeGammaCut(1, False, 800)
-
-CutEvents(testEventsm, megammaCut)
-CutEvents(testEventm0, megammaCut)
-CutEvents(testEventm1, megammaCut)
-CutEvents(testEventm2, megammaCut)
-CutEvents(testEventm3, megammaCut)
-CutEvents(testEventm4, megammaCut)
-CutEvents(testEventm5, megammaCut)
-CutEvents(testEventm7, megammaCut)
 
 
 print(testEventsm.GetEventCount())

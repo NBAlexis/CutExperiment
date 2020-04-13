@@ -208,7 +208,72 @@ def LeptonDot(eventSample: EventSample) -> float:
     return dot3d(normalize3d(p41.V3d()), normalize3d(p42.V3d()))
 
 
+def LeptonMissingDot(eventSample: EventSample) -> float:
+    """
+    assume nu is close to l, so (pl1+pl2).(pn1+pn2) is close to 1
+    :param eventSample:
+    :return:
+    """
+    leptonIdx1 = 0
+    leptonIdx2 = 0
+    missingMomentum = LorentzVector()
+    lepton1Found = False
+    for i in range(len(eventSample.particles)):
+        if 1 <= eventSample.particles[i].particleType <= 3:
+            if not lepton1Found:
+                lepton1Found = True
+                leptonIdx1 = i
+            else:
+                leptonIdx2 = i
+        if ParticleType.Missing == eventSample.particles[i].particleType:
+            missingMomentum = missingMomentum + eventSample.particles[i].momentum
+    p41 = eventSample.particles[leptonIdx1].momentum
+    p42 = eventSample.particles[leptonIdx2].momentum
+    demon1 = (p41.values[1] + p42.values[1]) * (p41.values[1] + p42.values[1])
+    demon1 = demon1 + (p41.values[2] + p42.values[2]) * (p41.values[2] + p42.values[2])
+    demon2 = (missingMomentum.values[1] * missingMomentum.values[1]) + (missingMomentum.values[2] * missingMomentum.values[2])
+    num = (p41.values[1] + p42.values[1]) * missingMomentum.values[1] + (p41.values[2] + p42.values[2]) * missingMomentum.values[2]
+    demon1 = demon1 * demon2
+    if demon1 <= 1.0e-12:
+        return 0.0
+    demon1 = math.sqrt(demon1)
+    return abs(num / demon1)
+
+
+def LeptonMissingAmplitude(eventSample: EventSample) -> float:
+    """
+    assume nu is close to l, so (pl1+pl2).(pn1+pn2) is close to 1
+    :param eventSample:
+    :return:
+    """
+    leptonIdx1 = 0
+    leptonIdx2 = 0
+    missingMomentum = LorentzVector()
+    lepton1Found = False
+    for i in range(len(eventSample.particles)):
+        if 1 <= eventSample.particles[i].particleType <= 3:
+            if not lepton1Found:
+                lepton1Found = True
+                leptonIdx1 = i
+            else:
+                leptonIdx2 = i
+        if ParticleType.Missing == eventSample.particles[i].particleType:
+            missingMomentum = missingMomentum + eventSample.particles[i].momentum
+    p41 = eventSample.particles[leptonIdx1].momentum
+    p42 = eventSample.particles[leptonIdx2].momentum
+    demon1 = (p41.values[1] + p42.values[1]) * (p41.values[1] + p42.values[1])
+    demon1 = demon1 + (p41.values[2] + p42.values[2]) * (p41.values[2] + p42.values[2])
+    demon2 = (missingMomentum.values[1] * missingMomentum.values[1]) + (missingMomentum.values[2] * missingMomentum.values[2])
+    return abs(demon1 - demon2)
+
+
 def PTLandPTMissing(eventSample: EventSample) -> float:
+    """
+    This is Mo1 = sqrt( (|pl_T|+|pl_T|+|pmissing_T|)^2 -  (pl_T+pl_T+pmissing_T)^2)
+    The momenta here are 3D
+    :param eventSample:
+    :return:
+    """
     leptonIdx1 = 0
     leptonIdx2 = 0
     missingMomentum = LorentzVector()
@@ -228,6 +293,8 @@ def PTLandPTMissing(eventSample: EventSample) -> float:
     missingMomentum = missingMomentum + p41
     missingMomentum = missingMomentum + p42
     right = missingMomentum.Pt()
+    if left * left - right * right <= 0:
+        return 0
     return math.sqrt(left * left - right * right)
 
 
@@ -375,10 +442,13 @@ def RadiusA(eventSample: EventSample) -> float:
     if lp < 0 or lp > 1:
         return -1.0
     thetaPhoton = math.cos(momentumPhoton.Theta())
-    return (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + (0.5 - abs(lp - 0.5)) * (0.5 - abs(lp - 0.5))
+    return (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + 4.0 * (0.5 - abs(lp - 0.5)) * (0.5 - abs(lp - 0.5))
 
 
 def RadiusB(eventSample: EventSample) -> float:
+    """
+    (1 - costheta)^2 + L_p^2
+    """
     missingIdx = -1
     leptonIdx = -1
     largestEa = -1.0
@@ -427,5 +497,168 @@ def RadiusC(eventSample: EventSample) -> float:
     if lp < 0 or lp > 1:
         return -1.0
     thetaPhoton = math.cos(momentumPhoton.Theta())
-    return (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + (1- lp) * (1- lp)
+    return (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + (1 - lp) * (1 - lp)
 
+
+def SHatAW(eventSample: EventSample) -> float:
+    missingIdx = -1
+    leptonIdx = -1
+    largestEa = -1.0
+    largestPhotonIdx = -1
+    for i in range(len(eventSample.particles)):
+        if ParticleType.Photon == eventSample.particles[i].particleType:
+            if eventSample.particles[i].momentum.values[0] > largestEa:
+                largestEa = eventSample.particles[i].momentum.values[0]
+                largestPhotonIdx = i
+        if 6 == eventSample.particles[i].particleType:
+            missingIdx = i
+        if 1 == eventSample.particles[i].particleType or 2 == eventSample.particles[i].particleType:
+            leptonIdx = i
+    pMissing = eventSample.particles[missingIdx].momentum
+    pLepton = eventSample.particles[leptonIdx].momentum
+    alpha = 2
+    if abs(pLepton.values[1]) < 100.0:
+        if abs(pLepton.values[2]) > 100.0:
+            alpha = (pMissing.values[2] / pLepton.values[2])
+    else:
+        if abs(pLepton.values[2]) < 100.0:
+            alpha = (pMissing.values[1] / pLepton.values[1])
+        else:
+            alpha = 0.5 * ((pMissing.values[1] / pLepton.values[1]) + (pMissing.values[2] / pLepton.values[2]))
+    pLargestPhotn = eventSample.particles[largestPhotonIdx].momentum
+    pAll = pLepton + pLargestPhotn
+    pMissing2 = LorentzVector(pLepton.values[0] * abs(alpha), pMissing.values[1], pMissing.values[2], alpha * pLepton.values[3])
+    pAll = pAll + pMissing2
+    return pAll * pAll
+
+
+def SHatWW(eventSample: EventSample) -> float:
+    """
+    pW + pW = pl + pl + pnu + pnu
+    :param eventSample:
+    :return:
+    """
+    leptonIdx1 = 0
+    leptonIdx2 = 0
+    pm = LorentzVector(0, 0, 0, 0)
+    for i in range(len(eventSample.particles)):
+        if 1 <= eventSample.particles[i].particleType <= 3:
+            if eventSample.particles[i].PGDid > 0:
+                leptonIdx2 = i
+            else:
+                leptonIdx1 = i
+        if ParticleType.Missing == eventSample.particles[i].particleType:
+            pm = pm + eventSample.particles[i].momentum
+    p1 = eventSample.particles[leptonIdx1].momentum
+    p2 = eventSample.particles[leptonIdx2].momentum
+    kappa = p1.values[2] * p2.values[1] - p1.values[1] * p2.values[2]
+    if abs(kappa) < 10:
+        return 0.0
+    u = (pm.values[2] * p2.values[1] - pm.values[1] * p2.values[2]) / kappa
+    v = -(pm.values[2] * p1.values[1] - pm.values[1] * p1.values[2]) / kappa
+    # if u < 0 or v < 0:
+    #    u = 3
+    #    v = 3
+    #    k = 0
+    final = ((1 + abs(u)) * p1.values[0] + (1 + abs(v)) * p2.values[0]) ** 2
+    final = final - (((1 + u) * p1.values[3] + (1 + v) * p2.values[3]) ** 2)
+    final = final - ((p1.values[1] + p2.values[1] + pm.values[1]) ** 2)
+    final = final - ((p1.values[2] + p2.values[2] + pm.values[2]) ** 2)
+    return final
+
+
+def SHatWWUV(eventSample: EventSample):
+    """
+    pW + pW = pl + pl + pnu + pnu
+    :param eventSample:
+    :return:
+    """
+    leptonIdx1 = 0
+    leptonIdx2 = 0
+    pm = LorentzVector(0, 0, 0, 0)
+    for i in range(len(eventSample.particles)):
+        if 1 <= eventSample.particles[i].particleType <= 3:
+            if eventSample.particles[i].PGDid > 0:
+                leptonIdx2 = i
+            else:
+                leptonIdx1 = i
+        if ParticleType.Missing == eventSample.particles[i].particleType:
+            pm = pm + eventSample.particles[i].momentum
+    p1 = eventSample.particles[leptonIdx1].momentum
+    p2 = eventSample.particles[leptonIdx2].momentum
+    kappa = p1.values[2] * p2.values[1] - p1.values[1] * p2.values[2]
+    # if abs(kappa) < 10:
+    #    return [-1.0, -1.0]
+    u = (pm.values[2] * p2.values[1] - pm.values[1] * p2.values[2]) / kappa
+    v = -(pm.values[2] * p1.values[1] - pm.values[1] * p1.values[2]) / kappa
+    return [u, v]
+
+
+def SHatWWDebug(eventSample: EventSample) -> float:
+    """
+    pW + pW = pl + pl + pnu + pnu
+    :param eventSample:
+    :return:
+    """
+    leptonIdx1 = 0
+    leptonIdx2 = 0
+    pm = LorentzVector(0, 0, 0, 0)
+    for i in range(len(eventSample.particles)):
+        if 1 <= eventSample.particles[i].particleType <= 3:
+            if eventSample.particles[i].PGDid > 0:
+                leptonIdx2 = i
+            else:
+                leptonIdx1 = i
+        if ParticleType.Missing == eventSample.particles[i].particleType:
+            pm = pm + eventSample.particles[i].momentum
+    p1 = eventSample.particles[leptonIdx1].momentum
+    p2 = eventSample.particles[leptonIdx2].momentum
+    kappa = p1.values[2] * p2.values[1] - p1.values[1] * p2.values[2]
+    u = (pm.values[2] * p2.values[1] - pm.values[1] * p2.values[2]) / kappa
+    v = -(pm.values[2] * p1.values[1] - pm.values[1] * p1.values[2]) / kappa
+    k = 1
+    print(u)
+    print(v)
+    if u < 0 or v < 0:
+        u = 1
+        v = 1
+        k = 0
+    final = ((1 + u) * p1.values[0] + (1 + v) * p2.values[0]) ** 2
+    final = final - (((1 + u) * p1.values[3] + (1 + v) * p2.values[3]) ** 2) * k
+    final = final - ((p1.values[1] + p2.values[1] + pm.values[1]) ** 2)
+    final = final - ((p1.values[2] + p2.values[2] + pm.values[2]) ** 2)
+    print(p1.Scale(u))
+    print(p2.Scale(v))
+    return final
+
+
+def SHatWWReal(eventSample: EventSample) -> float:
+    """
+    pW + pW = pl + pl + pnu + pnu
+    assume LHE file, so nu is visible
+    :param eventSample:
+    :return:
+    """
+    pall = LorentzVector(0, 0, 0, 0)
+    for i in range(len(eventSample.particles)):
+        if 1 <= eventSample.particles[i].particleType <= 2:
+            pall = pall + eventSample.particles[i].momentum
+        if ParticleType.Missing == eventSample.particles[i].particleType:
+            pall = pall + eventSample.particles[i].momentum
+    return pall * pall
+
+
+def SHatWWRealDebug(eventSample: EventSample) -> LorentzVector:
+    """
+    pW + pW = pl + pl + pnu + pnu
+    assume LHE file, so nu is visible
+    :param eventSample:
+    :return:
+    """
+    pall = LorentzVector(0, 0, 0, 0)
+    for i in range(len(eventSample.particles)):
+        if 1 <= eventSample.particles[i].particleType <= 2:
+            pall = pall + eventSample.particles[i].momentum
+        if ParticleType.Missing == eventSample.particles[i].particleType:
+            pall = pall + eventSample.particles[i].momentum
+    return pall
