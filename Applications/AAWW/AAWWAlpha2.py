@@ -2,8 +2,8 @@ from Interfaces.LHCOlympics import LoadLHCOlympics
 from CutAndExport.CutFunctions import *
 from CutAndExport.CutEvent import CutEvents
 
-folderName = "a1"
-fileHeader = "alpha1"
+folderName = "a5"
+fileHeader = "alpha5"
 a0 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + folderName + "/" + fileHeader + "-0.lhco")
 a1 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + folderName + "/" + fileHeader + "-1.lhco")
 a2 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + folderName + "/" + fileHeader + "-2.lhco")
@@ -16,11 +16,12 @@ a8 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + fold
 a9 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + folderName + "/" + fileHeader + "-9.lhco")
 a10 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + folderName + "/" + fileHeader + "-10.lhco")
 
-hasAdd = False
+totalNum = 250000.0
+hasAdd = True
 if hasAdd:
     # ====================== for a4 or a5 =========================
-    folderName = "a4b"
-    fileHeader = "alpha4-b"
+    folderName = "a5b"
+    fileHeader = "alpha5-1"
     b0 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + folderName + "/" + fileHeader + "-0.lhco")
     b1 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + folderName + "/" + fileHeader + "-1.lhco")
     b2 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wwaa/" + folderName + "/" + fileHeader + "-2.lhco")
@@ -45,7 +46,7 @@ if hasAdd:
     a10.AddEventSet(b10)
 
 # alpha 1
-crossSection = [824.0, 786.5, 755.5, 733.3, 722.1, 718.5, 721.9, 734.7, 765.7, 786.8, 823.2]
+# crossSection = [824.0, 786.5, 755.5, 733.3, 722.1, 718.5, 721.9, 734.7, 765.7, 786.8, 823.2]
 # alpha 2
 # crossSection = [736.9, 729.7, 726.4, 721.0, 719.4, 718.2, 719.0, 720.5, 726.3, 731.7, 738.0]
 # alpha 3
@@ -57,7 +58,7 @@ crossSection = [824.0, 786.5, 755.5, 733.3, 722.1, 718.5, 721.9, 734.7, 765.7, 7
 # alpha 5
 # why this is smaller? crossSection = [719.8, 718.9, 720.7, 718.1, 719.9, 717.7, 718.3, 717.8, 719.5, 717.8, 720.2]
 # alpha 5 b
-# crossSection = [724.0, 723.3, 723.2, 722.9, 722.5, 722.3, 722.9, 722.4, 722.7, 723.6, 724.9]
+crossSection = [724.0, 723.3, 723.2, 722.9, 722.5, 722.3, 722.9, 722.4, 722.7, 723.6, 724.9]
 
 print(a0.GetEventCount())
 print(a1.GetEventCount())
@@ -110,43 +111,13 @@ print(a8.GetEventCount())
 print(a9.GetEventCount())
 print(a10.GetEventCount())
 
-mw=80.379
-mz=91.1876
-cw=0.876801
-sw=0.480853
-vev=246
-e2=0.0934761 # sqrt{ 4 pi alpha} for alpha = 1/134
-shatCutAlpha1 = [SHatCutWW(1000.0 * math.sqrt(32 * math.pi * mw * mw / (abs(-0.12 + i * 0.024) + 1.0e-8))) for i in range(0, 11)]
-shatCutAlpha2 = [SHatCutWW(1000.0 * math.sqrt(128 * math.pi * mw * mw / (abs(-0.2 + i * 0.04) + 1.0e-8))) for i in range(0, 11)]
-shatCutAlpha3 = [SHatCutWW(1.0e6 * math.sqrt(16 * math.pi / (abs(-2.9 + i * 0.58) + 1.0e-8))) for i in range(0, 11)]
-shatCutAlpha4 = [SHatCutWW(1.0e6 * math.sqrt(64 * math.pi / (abs(-5.6 + i * 1.18) + 1.0e-8))) for i in range(0, 11)]
-shatCutAlpha5 = [SHatCutWW(1.0e6 * math.sqrt(48 * math.pi / (abs(-2.2 + i * 0.45) + 1.0e-8))) for i in range(0, 11)]
-
-vbfCut = StandardVBFCut(True, 180.0, 2.3)
-
-CutEvents(a0, shatCutAlpha1[0])
-CutEvents(a1, shatCutAlpha1[1])
-CutEvents(a2, shatCutAlpha1[2])
-CutEvents(a3, shatCutAlpha1[3])
-CutEvents(a4, shatCutAlpha1[4])
-CutEvents(a5, shatCutAlpha1[5])
-CutEvents(a6, shatCutAlpha1[6])
-CutEvents(a7, shatCutAlpha1[7])
-CutEvents(a8, shatCutAlpha1[8])
-CutEvents(a9, shatCutAlpha1[9])
-CutEvents(a10, shatCutAlpha1[10])
-
-print(a0.GetEventCount())
-print(a1.GetEventCount())
-print(a2.GetEventCount())
-print(a3.GetEventCount())
-print(a4.GetEventCount())
-print(a5.GetEventCount())
-print(a6.GetEventCount())
-print(a7.GetEventCount())
-print(a8.GetEventCount())
-print(a9.GetEventCount())
-print(a10.GetEventCount())
+jetNumberCut = JetNumberCut(1, [2])
+leptonNumberCut = LeptonPMCut(False, 1, 1)
+vbfCut = StandardVBFCut(True, 150.0, 1.2)
+phillmCut = PhiLLMCut(1, 0.3)
+shatCut = SHatCutWWTest(1, 1.5e6)
+leptonCut = LeptonPMDotCut(0, False, -0.0)
+molCut = MolCut(1, False, 450)
 
 CutEvents(a0, vbfCut)
 CutEvents(a1, vbfCut)
@@ -160,7 +131,29 @@ CutEvents(a8, vbfCut)
 CutEvents(a9, vbfCut)
 CutEvents(a10, vbfCut)
 
-molCut = MolCut(1, False, 500)
+CutEvents(a0, phillmCut)
+CutEvents(a1, phillmCut)
+CutEvents(a2, phillmCut)
+CutEvents(a3, phillmCut)
+CutEvents(a4, phillmCut)
+CutEvents(a5, phillmCut)
+CutEvents(a6, phillmCut)
+CutEvents(a7, phillmCut)
+CutEvents(a8, phillmCut)
+CutEvents(a9, phillmCut)
+CutEvents(a10, phillmCut)
+
+CutEvents(a0, shatCut)
+CutEvents(a1, shatCut)
+CutEvents(a2, shatCut)
+CutEvents(a3, shatCut)
+CutEvents(a4, shatCut)
+CutEvents(a5, shatCut)
+CutEvents(a6, shatCut)
+CutEvents(a7, shatCut)
+CutEvents(a8, shatCut)
+CutEvents(a9, shatCut)
+CutEvents(a10, shatCut)
 
 CutEvents(a0, molCut)
 CutEvents(a1, molCut)
@@ -173,8 +166,6 @@ CutEvents(a7, molCut)
 CutEvents(a8, molCut)
 CutEvents(a9, molCut)
 CutEvents(a10, molCut)
-
-leptonCut = LeptonPMDotCut(0, False, -0.75)
 
 CutEvents(a0, leptonCut)
 CutEvents(a1, leptonCut)
@@ -203,4 +194,4 @@ print(a10.GetEventCount())
 lstSets = [a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10]
 
 for i in range(11):
-    print(str(lstSets[i].GetEventCount() * crossSection[i] / 250000.0) + ", ")
+    print(str(lstSets[i].GetEventCount() * crossSection[i] / totalNum) + ", ")

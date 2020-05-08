@@ -27,6 +27,13 @@ class EventSample:
                 jetCount += 1
         return jetCount
 
+    def GetPhotonCount(self) -> int:
+        photonCount = 0
+        for particle in self.particles:
+            if ParticleType.Photon == particle.particleType:
+                photonCount += 1
+        return photonCount
+
     def GetPTMissing2d(self) -> float:
         ptx = 0.0
         pty = 0.0

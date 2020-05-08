@@ -397,29 +397,63 @@ class RadiusACut:
         return ra < self.cutValue
 
 
+class LeptonPtCut:
+    """
+    If cutType = 0, cut off pt > cutValue (Not support, meaningless)
+    If cutType = 1, cut off pt < cutValue
+    """
+
+    def __init__(self, cutValue: float):
+        self.cutValue = cutValue
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        return LeptonPtFilter(eventSample) < self.cutValue
+
+
 class SHatCut2:
     """
     shat = (p_nu + p_l + p_a)^2 < (p_nu + p_l + p_a)_T^2
     so if (p_nu + p_l + p_a)_T^2 < cut_value, then shat is sure to be < cut_value
     """
 
-    def __init__(self, cutValue: float):
+    def __init__(self, cutType: int, cutValue: float):
+        self.cutType = cutType
         self.cutValue = cutValue
 
     def Cut(self, eventSample: EventSample) -> bool:
         pAll2 = SHatAW(eventSample)
-        return pAll2 > self.cutValue
+        if 0 == self.cutType:
+            return pAll2 > self.cutValue
+        return pAll2 < self.cutValue
 
 
-class SHatCutWW:
+class SHatCutWWTest:
     """
-    pW + pW = pl + pl + pnu + pnu
-    so if (p_nu + p_l + p_a)_T^2 < cut_value, then shat is sure to be < cut_value
+    use SHatWW
     """
 
-    def __init__(self, cutValue: float):
+    def __init__(self, cutType: int, cutValue: float):
+        self.cutType = cutType
         self.cutValue = cutValue
 
     def Cut(self, eventSample: EventSample) -> bool:
-        shatWW = SHatWW(eventSample)
-        return shatWW > self.cutValue
+        pAll2 = SHatWW(eventSample)
+        if 0 == self.cutType:
+            return pAll2 > self.cutValue
+        return pAll2 < self.cutValue
+
+
+class PhiLLMCut:
+    """
+    use PhiLLM
+    """
+
+    def __init__(self, cutType: int, cutValue: float):
+        self.cutType = cutType
+        self.cutValue = cutValue
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        pAll2 = PhiLLM(eventSample)
+        if 0 == self.cutType:
+            return pAll2 > self.cutValue
+        return pAll2 < self.cutValue

@@ -18,6 +18,8 @@ def GetParticleType(PDGid: int) -> ParticleType:
         return ParticleType.Muon
     if 15 == absId:
         return ParticleType.Tau
+    if 22 == absId:
+        return ParticleType.Photon
     return ParticleType.Intermediate
 
 

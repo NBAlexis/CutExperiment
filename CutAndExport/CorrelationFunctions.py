@@ -135,3 +135,25 @@ def CorrelationData(eventSet: EventSet, function1, function2, dim1, dim2, range1
     import matplotlib.pyplot as plt
     plt.hist2d(xList, yList, [dim1, dim2])
     plt.show()
+
+
+def CorrelationDataAndSave(eventSet: EventSet, function1, function2, dim1, dim2, range1, range2, fileName):
+    """
+    Return a two dimension array
+    """
+    result_f = open(fileName, 'a')
+    xList = []
+    yList = []
+    for event in eventSet.events:
+        v1 = function1(event)
+        v2 = function2(event)
+        if range1[0] <= v1 <= range1[1] and range2[0] <= v2 <= range2[1]:
+            result_f.write("{}, {}\n".format(v1, v2))
+            xList.append(v1)
+            yList.append(v2)
+    result_f.close()
+    import matplotlib.pyplot as plt
+    plt.hist2d(xList, yList, [dim1, dim2])
+    plt.show()
+
+
