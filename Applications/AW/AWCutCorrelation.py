@@ -9,27 +9,27 @@ from CutAndExport.SpecialTest import *
 from Interfaces.LHCOlympics import LoadLHCOlympics
 from Interfaces.LesHouchesEvent import LoadLesHouchesEvent
 
-os.chdir("F:/PyworkingFolder/CutExperiment/_DataFolder")
+os.chdir("../../")
 
-testEventsm = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features/bgsm.lhco")
-testEventsm2 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features/bgsm2.lhco")
-testEventsm3 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features/bgsm3.lhco")
+testEventsm = LoadLHCOlympics("_DataFolder/wa/features/bgsm.lhco")
+testEventsm2 = LoadLHCOlympics("_DataFolder/wa/features/bgsm2.lhco")
+testEventsm3 = LoadLHCOlympics("_DataFolder/wa/features/bgsm3.lhco")
 testEventsm.AddEventSet(testEventsm2)
 testEventsm.AddEventSet(testEventsm3)
-testEventm2 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/fm2.lhco")
-testEventm3 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/fm3.lhco")
-testEventm4 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/fm4.lhco")
-testEventm5 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/fm5.lhco")
-testEventt5 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/ft5.lhco")
-testEventt6 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/ft6.lhco")
-testEventt7 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/ft7.lhco")
+testEventm2 = LoadLHCOlympics("_DataFolder/wa/features2/fm2.lhco")
+testEventm3 = LoadLHCOlympics("_DataFolder/wa/features2/fm3.lhco")
+testEventm4 = LoadLHCOlympics("_DataFolder/wa/features2/fm4.lhco")
+testEventm5 = LoadLHCOlympics("_DataFolder/wa/features2/fm5.lhco")
+testEventt5 = LoadLHCOlympics("_DataFolder/wa/features2/ft5.lhco")
+testEventt6 = LoadLHCOlympics("_DataFolder/wa/features2/ft6.lhco")
+testEventt7 = LoadLHCOlympics("_DataFolder/wa/features2/ft7.lhco")
 
 # testEventm2r = LoadLesHouchesEvent("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/fm2.lhe")
 # testEventm2 = LoadLHCOlympics("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/ft5.lhco")
 # testEventm2r = LoadLesHouchesEvent("F:/PyworkingFolder/CutExperiment/_DataFolder/wa/features2/ft5.lhe")
 
-# """
-# cut flow
+"""
+# total cut flow
 jetNumberCut = JetNumberCut(1, [2])
 photonNumberCut = PhotonNumberCut(1, [1])
 leptonNumberCut = LeptonPMCut(False, 1, 0)
@@ -141,8 +141,7 @@ print(testEventt7.GetEventCount())
 yjjCutM = StandardVBFCut(True, 0.0, 1.5)
 yjjCutT = StandardVBFCut(True, 0.0, 0.8)
 
-r1Cut = RadiusACut(1, 0.25, 2)
-r2Cut = RadiusACut(1, 0.25, 3)
+rCut = RadiusACut(1, 0.05, 1)
 # CutEvents(testEventsm, r1Cut)
 # CutEvents(testEventt5, r1Cut)
 # CutEvents(testEventt6, r2Cut)
@@ -171,30 +170,26 @@ print(testEventt6.GetEventCount())
 print(testEventt7.GetEventCount())
 
 meac = MeGammaCut(1, False, 300)
-dupliSmr1 = EventSet()
-dupliSmr2 = EventSet()
+dupliSmr = EventSet()
 meaSmr2 = EventSet()
-dupliSmr1.AddEventSet(testEventsm)
-dupliSmr2.AddEventSet(testEventsm)
+dupliSmr.AddEventSet(testEventsm)
 meaSmr2.AddEventSet(testEventsm)
 CutEvents(testEventsm, yjjCutM)
-CutEvents(dupliSmr1, r1Cut)
-CutEvents(dupliSmr2, r2Cut)
+CutEvents(dupliSmr, rCut)
 CutEvents(meaSmr2, meac)
 CutEvents(testEventm2, yjjCutM)
 CutEvents(testEventm3, yjjCutM)
 CutEvents(testEventm4, yjjCutM)
 CutEvents(testEventm5, yjjCutM)
-CutEvents(testEventt5, r1Cut)
-CutEvents(testEventt6, r2Cut)
-CutEvents(testEventt7, r2Cut)
+CutEvents(testEventt5, rCut)
+CutEvents(testEventt6, rCut)
+CutEvents(testEventt7, rCut)
 
 print("=============== yjj, r1 r2 ====================")
 
 
 print(testEventsm.GetEventCount())
-print(dupliSmr1.GetEventCount())
-print(dupliSmr2.GetEventCount())
+print(dupliSmr.GetEventCount())
 print(meaSmr2.GetEventCount())
 print(testEventm2.GetEventCount())
 print(testEventm3.GetEventCount())
@@ -204,7 +199,7 @@ print(testEventt5.GetEventCount())
 print(testEventt6.GetEventCount())
 print(testEventt7.GetEventCount())
 
-# """
+"""
 
 """
 # Cut experiment
@@ -276,26 +271,38 @@ print(testEventsm.GetEventCount())
 print(testEventt5.GetEventCount())
 print(testEventt7.GetEventCount())
 
+# testYjjSM = HistogramWithMinMax(testEventsm, Megamma, [0, 3500], 50)
+# testYjjM2 = HistogramWithMinMax(testEventm2, Megamma, [0, 3500], 50)
+# testYjjT5 = HistogramWithMinMax(testEventt5, Megamma, [0, 3500], 50)
+
 # CutEvents(testEventsm, shatCut2)
 # CutEvents(testEventm2, shatCut2)
 # CutEvents(testEventt5, shatCut2)
+# CutEvents(testEventt7, shatCut2)
 
-# print(testEventsm.GetEventCount())
+print(testEventsm.GetEventCount())
 # print(testEventm2.GetEventCount())
-# print(testEventt5.GetEventCount())
+print(testEventt5.GetEventCount())
+print(testEventt7.GetEventCount())
+
+testYjjSM = HistogramWithMinMax(testEventsm, RadiusA, [0, 1.25], 50)
+# testYjjM2 = HistogramWithMinMax(testEventm2, LpFilter, [0, 1], 50)
+testYjjT5 = HistogramWithMinMax(testEventt5, RadiusA, [0, 1.25], 50)
+testYjjT7 = HistogramWithMinMax(testEventt7, RadiusA, [0, 1.25], 50)
 
 # testYjjSM = HistogramWithMinMax(testEventsm, RadiusA, [0, 1], 50)
 # testYjjM2 = HistogramWithMinMax(testEventm2, LpFilter, [0, 1], 50)
 # print(testYjjSM.listCount)
 # print(testYjjM2.listCount)
-testYjjSM = HistogramWithMinMax(testEventsm, RadiusC, [0, 2], 50)
+# testYjjSM = HistogramWithMinMax(testEventsm, RadiusC, [0, 2], 50)
 # testYjjSM2 = HistogramWithMinMax(testEventm2, RadiusC, [0, 2], 50)
 # testYjjT5 = HistogramWithMinMax(testEventt5, RadiusB, [0, 2], 50)
-testYjjT7 = HistogramWithMinMax(testEventt7, RadiusC, [0, 2], 50)
+# testYjjT7 = HistogramWithMinMax(testEventt7, RadiusC, [0, 2], 50)
 print(testYjjSM.listCount)
+# print(testYjjM2.listCount)
 # print(testYjjT5.listCount)
 # print(testYjjSM2.listCount)
-# print(testYjjT5.listCount)
+print(testYjjT5.listCount)
 print(testYjjT7.listCount)
 
 """
@@ -355,8 +362,8 @@ print(testEventt5.GetEventCount())
 
 CorrelationDataAndSave(testEventsm, SHatAW, Megamma, 40, 40, [0, 1e5], [0, 300], 'smmea.csv')
 CorrelationDataAndSave(testEventt5, SHatAW, Megamma, 40, 40, [0, 1e7], [0, 3000], 't5mea.csv')
-CorrelationDataAndSave(testEventsm, SHatAW, RadiusB, 40, 40, [0, 1e5], [0, 2], 'smr2.csv')
-CorrelationDataAndSave(testEventt5, SHatAW, RadiusB, 40, 40, [0, 1e7], [0, 2], 't5r2.csv')
+CorrelationDataAndSave(testEventsm, SHatAW, RadiusA, 40, 40, [0, 1e5], [0, 2], 'smr2.csv')
+CorrelationDataAndSave(testEventt5, SHatAW, RadiusA, 40, 40, [0, 1e7], [0, 2], 't5r2.csv')
 
 """
 
@@ -436,7 +443,7 @@ LpTest(testEventt7, "t7lp.csv")
 """
 
 """
-# This is s-cut
+# This is s-cut flow
 jetNumberCut = JetNumberCut(1, [2])
 photonNumberCut = PhotonNumberCut(1, [1])
 leptonNumberCut = LeptonPMCut(False, 1, 0)
@@ -621,7 +628,7 @@ print(testYjjT5.listCount)
 """
 
 """
-# This is to show the correlation
+# This is to show the correlation of s hat and s tilde
 particleCount0 = 0
 particleCount = 0
 lstDelta = []

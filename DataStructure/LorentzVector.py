@@ -59,6 +59,9 @@ class LorentzVector:
     def P3d(self):
         return [self.values[1], self.values[2], self.values[3]]
 
+    def MassSq(self) -> float:
+        return self.values[0] * self.values[0] - (self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
+
     def Mass(self) -> float:
         beforeSqrt = self.values[0] * self.values[0] - (self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
         return math.sqrt(0.0 if beforeSqrt < 0.0 else beforeSqrt)
@@ -89,7 +92,7 @@ class LorentzVector:
 
     # calculate Theta
     def Theta(self):
-        mass = self.Mass()
+        mass = self.MassSq()
         kValue = self.values[0] * self.values[0] - mass
         if kValue > 0.0:
             kValue = math.sqrt(kValue)

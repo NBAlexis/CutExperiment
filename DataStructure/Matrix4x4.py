@@ -63,8 +63,8 @@ class Matrix4x4:
         z = v3velocity[2]
         ret.values[0] = [ga, -ga * x, -ga * y, -ga * z]
         ret.values[1] = [-ga * x, (ga - 1) * x * x / vsq + 1, (ga - 1) * x * y / vsq, (ga - 1) * x * z / vsq]
-        ret.values[2] = [-ga * y, (ga - 1) * y * z / vsq, (ga - 1) * y * y / vsq + 1, (ga - 1) * y * z / vsq]
-        ret.values[3] = [-ga * z, (ga - 1) * z * z / vsq, (ga - 1) * z * y / vsq, (ga - 1) * z * z / vsq + 1]
+        ret.values[2] = [-ga * y, (ga - 1) * y * x / vsq, (ga - 1) * y * y / vsq + 1, (ga - 1) * y * z / vsq]
+        ret.values[3] = [-ga * z, (ga - 1) * z * x / vsq, (ga - 1) * z * y / vsq, (ga - 1) * z * z / vsq + 1]
         return ret
 
     def MultiplyMatrix(self, otherMatrix):

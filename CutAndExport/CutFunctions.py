@@ -6,6 +6,11 @@ from DataStructure.EventSample import EventSample
 from DataStructure.LorentzVector import LorentzVector
 from DataStructure.Particles import ParticleStatus, ParticleType
 
+'''
+If return true, the events are cut off.
+If return false, the events are preserved.
+'''
+
 
 class JetNumberCut:
     """
@@ -387,7 +392,7 @@ class RadiusACut:
         thetaPhoton = math.cos(momentumPhoton.Theta())
         ra = 0
         if 1 == self.radiusType:
-            ra = (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + 4.0 * (0.5 - abs(lp - 0.5)) * (0.5 - abs(lp - 0.5))
+            ra = (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + (lp - 0.5) * (lp - 0.5)
         elif 2 == self.radiusType:
             ra = (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + lp * lp
         elif 3 == self.radiusType:

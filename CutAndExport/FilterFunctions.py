@@ -450,7 +450,7 @@ def RadiusA(eventSample: EventSample) -> float:
     if lp < 0 or lp > 1:
         return -1.0
     thetaPhoton = math.cos(momentumPhoton.Theta())
-    return (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + 4.0 * (0.5 - abs(lp - 0.5)) * (0.5 - abs(lp - 0.5))
+    return (1 - abs(thetaPhoton)) * (1 - abs(thetaPhoton)) + (lp - 0.5) * (lp - 0.5)
 
 
 def RadiusB(eventSample: EventSample) -> float:
@@ -517,6 +517,35 @@ def RadiusD(eventSample: EventSample) -> float:
     return (1.0 - abs(thetaPhoton)) + 8.0 * abs(0.5 - lp)
 
 
+def SHatAW2(eventSample: EventSample) -> float:
+    missingIdx = -1
+    leptonIdx = -1
+    largestEa = -1.0
+    largestPhotonIdx = -1
+    for i in range(len(eventSample.particles)):
+        if ParticleType.Photon == eventSample.particles[i].particleType:
+            if eventSample.particles[i].momentum.values[0] > largestEa:
+                largestEa = eventSample.particles[i].momentum.values[0]
+                largestPhotonIdx = i
+        if 6 == eventSample.particles[i].particleType:
+            missingIdx = i
+        if 1 == eventSample.particles[i].particleType or 2 == eventSample.particles[i].particleType:
+            leptonIdx = i
+    pMissing = eventSample.particles[missingIdx].momentum
+    pLepton = eventSample.particles[leptonIdx].momentum
+    lengthMissingT = math.sqrt(pMissing.values[1] * pMissing.values[1] + pMissing.values[2] * pMissing.values[2])
+    lengthLeptonT = math.sqrt(pLepton.values[1] * pLepton.values[1] + pLepton.values[2] * pLepton.values[2])
+    alpha = 2
+    if lengthLeptonT > 1.0e-12:
+        alpha = lengthMissingT / lengthLeptonT
+    pLargestPhotn = eventSample.particles[largestPhotonIdx].momentum
+    pAll = pLepton + pLargestPhotn
+    pMissing2 = LorentzVector(pLepton.values[0] * abs(alpha), pMissing.values[1], pMissing.values[2],
+                              alpha * pLepton.values[3])
+    pAll = pAll + pMissing2
+    return pAll * pAll
+
+
 def SHatAW(eventSample: EventSample) -> float:
     missingIdx = -1
     leptonIdx = -1
@@ -533,16 +562,18 @@ def SHatAW(eventSample: EventSample) -> float:
             leptonIdx = i
     pMissing = eventSample.particles[missingIdx].momentum
     pLepton = eventSample.particles[leptonIdx].momentum
+    lengthMissingT = math.sqrt(pMissing.values[1] * pMissing.values[1] + pMissing.values[2] * pMissing.values[2])
+    lengthLeptonT = math.sqrt(pLepton.values[1] * pLepton.values[1] + pLepton.values[2] * pLepton.values[2])
     alpha = 2
-    if abs(pLepton.values[1]) > 2.0 * abs(pLepton.values[2]):
-        alpha = (pMissing.values[1] / pLepton.values[1])
-    elif abs(pLepton.values[2]) > 2.0 * abs(pLepton.values[1]):
-        alpha = (pMissing.values[2] / pLepton.values[2])
-    else:
-        alpha = 0.5 * ((pMissing.values[1] / pLepton.values[1]) + (pMissing.values[2] / pLepton.values[2]))
-    pLargestPhotn = eventSample.particles[largestPhotonIdx].momentum
-    pAll = pLepton + pLargestPhotn
-    pMissing2 = LorentzVector(pLepton.values[0] * abs(alpha), pMissing.values[1], pMissing.values[2],
+    if lengthLeptonT > 1.0e-12:
+        alpha = lengthMissingT / lengthLeptonT
+    pLargestPhoton = eventSample.particles[largestPhotonIdx].momentum
+    pAll = pLepton + pLargestPhoton
+    pMissing2 = LorentzVector(math.sqrt(pMissing.values[1] * pMissing.values[1]
+                                        + pMissing.values[2] * pMissing.values[2]
+                                        + pLepton.values[3] * pLepton.values[3] * alpha * alpha),
+                              pMissing.values[1],
+                              pMissing.values[2],
                               alpha * pLepton.values[3])
     pAll = pAll + pMissing2
     return pAll * pAll

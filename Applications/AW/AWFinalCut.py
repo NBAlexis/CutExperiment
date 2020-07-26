@@ -9,12 +9,12 @@ from CutAndExport.SpecialTest import *
 from Interfaces.LHCOlympics import LoadLHCOlympics
 from Interfaces.LesHouchesEvent import LoadLesHouchesEvent
 
-os.chdir("F:/PyworkingFolder/CutExperiment/_DataFolder")
+os.chdir("../../_DataFolder")
 
-fileHeader = "fm3"
-iYjjType = 0
-bAdd = False
-unicutIndex = 1
+fileHeader = "ft7"
+iYjjType = 1
+bAdd = True
+unicutIndex = 6
 
 testEvent1 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-n-0.lhco")
 testEvent2 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-n-5.lhco")
@@ -24,6 +24,34 @@ testEvent5 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "
 testEvent6 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-n-3.lhco")
 testEvent7 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-n-8.lhco")
 testEvent8 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-n-4.lhco")
+
+if bAdd:
+    addEvent1 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-m-0.lhco")
+    testEvent1.AddEventSet(addEvent1)
+    addEvent2 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-m-1.lhco")
+    testEvent2.AddEventSet(addEvent2)
+    addEvent3 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-m-3.lhco")
+    testEvent3.AddEventSet(addEvent3)
+    addEvent4 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-m-4.lhco")
+    testEvent4.AddEventSet(addEvent4)
+    addEvent5 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-m-5.lhco")
+    testEvent5.AddEventSet(addEvent5)
+    addEvent6 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-m-6.lhco")
+    testEvent6.AddEventSet(addEvent6)
+    addEvent7 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-m-7.lhco")
+    testEvent7.AddEventSet(addEvent7)
+    addEvent8 = LoadLHCOlympics("wa/fittings2/" + fileHeader + "/" + fileHeader + "-m-8.lhco")
+    testEvent8.AddEventSet(addEvent8)
+
+
+print(testEvent1.GetEventCount())
+print(testEvent2.GetEventCount())
+print(testEvent3.GetEventCount())
+print(testEvent4.GetEventCount())
+print(testEvent5.GetEventCount())
+print(testEvent6.GetEventCount())
+print(testEvent7.GetEventCount())
+print(testEvent8.GetEventCount())
 
 jetNumberCut = JetNumberCut(1, [2])
 photonNumberCut = PhotonNumberCut(1, [1])
@@ -41,17 +69,16 @@ e2 = 0.0934761  # sqrt{ 4 pi alpha} for alpha = 1/134
 
 uniFM2 = [math.sqrt(256 * math.pi * sw * sw * mw * mw / (cw * cw * e2 * vev * vev * abs(fm2))) * 1.0e6 for fm2 in [-8.2, -6.15, -4.15, -2.05, 2.0, 3.95, 6.0, 8.0]]
 uniFM3 = [math.sqrt(384 * math.pi * sw * sw * mw * mw / (cw * cw * e2 * vev * vev * abs(fm3))) * 1.0e6 for fm3 in [-21, -15.75, -10.5, -5.25, 5.25, 10.5, 15.75, 21]]
-uniFM4 = [math.sqrt(512 * math.pi * sw * sw * mw * mz / (e2 * vev * vev * abs(fm4))) * 1.0e6 for fm4 in [-15, -7.5, 8, 16]]
-uniFM5 = [math.sqrt(384 * math.pi * sw * mw * mz / (cw * e2 * vev * vev * abs(fm5))) * 1.0e6 for fm5 in [-8.2, -4.15, 3.95, 8.0]]
-uniFT5 = [math.sqrt(40 * math.pi / (cw * cw * abs(ft5))) * 1.0e6 for ft5 in [-0.7, -0.35, 0.37, 0.74]]
-uniFT6 = [math.sqrt(32 * math.pi / (cw * cw * abs(ft6))) * 1.0e6 for ft6 in [-1.6, -0.8, 0.85, 1.7]]
-uniFT7 = [math.sqrt(64 * math.pi / (cw * cw * abs(ft7))) * 1.0e6 for ft7 in [-2.6, -1.3, 1.4, 2.8]]
+uniFM4 = [math.sqrt(512 * math.pi * sw * sw * mw * mz / (e2 * vev * vev * abs(fm4))) * 1.0e6 for fm4 in [-15, -11.25, -7.5, -3.75, 4, 8, 12, 16]]
+uniFM5 = [math.sqrt(384 * math.pi * sw * mw * mz / (cw * e2 * vev * vev * abs(fm5))) * 1.0e6 for fm5 in [-25, -18.75, -12.5, -6.25, 6, 12, 18, 24]]
+uniFT5 = [math.sqrt(40 * math.pi / (cw * cw * abs(ft5))) * 1.0e6 for ft5 in [-0.7, -0.525, -0.35, -0.175, 0.185, 0.37, 0.555, 0.74]]
+uniFT6 = [math.sqrt(32 * math.pi / (cw * cw * abs(ft6))) * 1.0e6 for ft6 in [-1.6, -1.2, -0.8, -0.4, 0.425, 0.85, 1.275, 1.7]]
+uniFT7 = [math.sqrt(64 * math.pi / (cw * cw * abs(ft7))) * 1.0e6 for ft7 in [-2.6, -1.95, -1.3, -0.65, 0.7, 1.4, 2.1, 2.8]]
 uniCut = [uniFM2, uniFM3, uniFM4, uniFM5, uniFT5, uniFT6, uniFT7]
 
 yjjCutM = StandardVBFCut(True, 0.0, 1.5)
 
-r1Cut = RadiusACut(1, 0.25, 2)
-r2Cut = RadiusACut(1, 0.25, 3)
+r1Cut = RadiusACut(1, 0.05, 1)
 
 shatCut2 = SHatCut2(1, 4.0e5)
 
@@ -125,15 +152,6 @@ elif 1 == iYjjType:
     CutEvents(testEvent6, r1Cut)
     CutEvents(testEvent7, r1Cut)
     CutEvents(testEvent8, r1Cut)
-else:
-    CutEvents(testEvent1, r2Cut)
-    CutEvents(testEvent2, r2Cut)
-    CutEvents(testEvent3, r2Cut)
-    CutEvents(testEvent4, r2Cut)
-    CutEvents(testEvent5, r2Cut)
-    CutEvents(testEvent6, r2Cut)
-    CutEvents(testEvent7, r2Cut)
-    CutEvents(testEvent8, r2Cut)
 
 
 CutEvents(testEvent1, shatCut2)
