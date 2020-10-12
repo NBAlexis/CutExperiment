@@ -18,59 +18,102 @@ testEventsm4 = LoadLHCOlympics("_DataFolder/za/features/azsm4.lhco")
 testEventsm.AddEventSet(testEventsm2)
 testEventsm.AddEventSet(testEventsm3)
 testEventsm.AddEventSet(testEventsm4)
-testEventm2 = LoadLHCOlympics("_DataFolder/za/features/azsignalm3.lhco")
+testEventj3 = LoadLHCOlympics("_DataFolder/za/backgrounds/jjjll.lhco")
+testEventj32 = LoadLHCOlympics("_DataFolder/za/backgrounds/jjjll2.lhco")
+testEventj3.AddEventSet(testEventj32)
+testEventm2 = LoadLHCOlympics("_DataFolder/za/features/azsignalm2.lhco")
 testEventt5 = LoadLHCOlympics("_DataFolder/za/features/azsignalt5.lhco")
 
-print(LeptonPZ(testEventm2.events[0]))
-
 print(testEventsm.GetEventCount())
+print(testEventj3.GetEventCount())
 print(testEventm2.GetEventCount())
 print(testEventt5.GetEventCount())
 
 particleNumberCut = ParticleNumberZA()
 
 CutEvents(testEventsm, particleNumberCut)
+CutEvents(testEventj3, particleNumberCut)
 CutEvents(testEventm2, particleNumberCut)
 CutEvents(testEventt5, particleNumberCut)
 
 print(testEventsm.GetEventCount())
+print(testEventj3.GetEventCount())
 print(testEventm2.GetEventCount())
 print(testEventt5.GetEventCount())
 
-invllCut = EllInvMass(10, 91.1876)
+# ===================================================
+# Here starts the cut flow
 
-CutEvents(testEventsm, invllCut)
-CutEvents(testEventm2, invllCut)
-CutEvents(testEventt5, invllCut)
-
-print(testEventsm.GetEventCount())
-print(testEventm2.GetEventCount())
-print(testEventt5.GetEventCount())
-
-ellDotCut = DotEllCut(0.7)
-
-CutEvents(testEventsm, ellDotCut)
-CutEvents(testEventm2, ellDotCut)
-CutEvents(testEventt5, ellDotCut)
-
-print(testEventsm.GetEventCount())
-print(testEventm2.GetEventCount())
-print(testEventt5.GetEventCount())
-
-mzaCut = SHatZACut(300, -1)
-
-CutEvents(testEventsm, mzaCut)
-CutEvents(testEventm2, mzaCut)
-CutEvents(testEventt5, mzaCut)
-
-print(testEventsm.GetEventCount())
-print(testEventm2.GetEventCount())
-print(testEventt5.GetEventCount())
-
-
-testTlSM = HistogramWithMinMax(testEventsm, LeptonPZ, [-1, 1], 50)
-testTlM2 = HistogramWithMinMax(testEventm2, LeptonPZ, [-1, 1], 50)
-testTlT5 = HistogramWithMinMax(testEventt5, LeptonPZ, [-1, 1], 50)
+"""
+# Invariant mass of l+l-
+testTlSM = HistogramWithMinMax(testEventsm, InvMass, [0, 120], 40)
+testTlJ3 = HistogramWithMinMax(testEventj3, InvMass, [0, 120], 40)
+testTlM2 = HistogramWithMinMax(testEventm2, InvMass, [0, 120], 40)
+testTlT5 = HistogramWithMinMax(testEventt5, InvMass, [0, 120], 40)
 print(testTlSM.listCount)
+print(testTlJ3.listCount)
 print(testTlM2.listCount)
 print(testTlT5.listCount)
+"""
+
+"""
+# Yjj
+testTlSM = HistogramWithMinMax(testEventsm, Yjj2Filter, [0, 8], 40)
+testTlJ3 = HistogramWithMinMax(testEventj3, Yjj2Filter, [0, 8], 40)
+testTlM2 = HistogramWithMinMax(testEventm2, Yjj2Filter, [0, 8], 40)
+testTlT5 = HistogramWithMinMax(testEventt5, Yjj2Filter, [0, 8], 40)
+print(testTlSM.listCount)
+print(testTlJ3.listCount)
+print(testTlM2.listCount)
+print(testTlT5.listCount)
+"""
+
+"""
+# Mjj
+testTlSM = HistogramWithMinMax(testEventsm, Mjj2Filter, [0, 2000], 40)
+testTlJ3 = HistogramWithMinMax(testEventj3, Mjj2Filter, [0, 2000], 40)
+testTlM2 = HistogramWithMinMax(testEventm2, Mjj2Filter, [0, 2000], 40)
+testTlT5 = HistogramWithMinMax(testEventt5, Mjj2Filter, [0, 2000], 40)
+print(testTlSM.listCount)
+print(testTlJ3.listCount)
+print(testTlM2.listCount)
+print(testTlT5.listCount)
+"""
+
+"""
+# theta ll
+testTlSM = HistogramWithMinMax(testEventsm, LeptonDotZA, [-1, 1], 40)
+testTlJ3 = HistogramWithMinMax(testEventj3, LeptonDotZA, [-1, 1], 40)
+testTlM2 = HistogramWithMinMax(testEventm2, LeptonDotZA, [-1, 1], 40)
+testTlT5 = HistogramWithMinMax(testEventt5, LeptonDotZA, [-1, 1], 40)
+print(testTlSM.listCount)
+print(testTlJ3.listCount)
+print(testTlM2.listCount)
+print(testTlT5.listCount)
+"""
+
+"""
+# shat
+testTlSM = HistogramWithMinMax(testEventsm, SHatZA, [0, 8000], 40)
+testTlJ3 = HistogramWithMinMax(testEventj3, SHatZA, [0, 8000], 40)
+testTlM2 = HistogramWithMinMax(testEventm2, SHatZA, [0, 8000], 40)
+testTlT5 = HistogramWithMinMax(testEventt5, SHatZA, [0, 8000], 40)
+print(testTlSM.listCount)
+print(testTlJ3.listCount)
+print(testTlM2.listCount)
+print(testTlT5.listCount)
+"""
+
+# """
+# Polarization
+testTlSM = HistogramWithMinMax(testEventsm, LeptonPZAndGammaTheta, [0, 1.25], 40)
+testTlJ3 = HistogramWithMinMax(testEventj3, LeptonPZAndGammaTheta, [0, 1.25], 40)
+# testTlM2 = HistogramWithMinMax(testEventm2, LeptonPZAndGammaTheta, [0, 1.25], 40)
+testTlT5 = HistogramWithMinMax(testEventt5, LeptonPZAndGammaTheta, [0, 1.25], 40)
+print(testTlSM.listCount)
+print(testTlJ3.listCount)
+# print(testTlM2.listCount)
+print(testTlT5.listCount)
+# """
+
+

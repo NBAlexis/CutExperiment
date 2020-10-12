@@ -1,4 +1,6 @@
 from CutAndExport.FilterFunctions import *
+from DataStructure import Constants
+from DataStructure.EventSet import *
 from DataStructure.Constants import *
 from DataStructure.EventSample import EventSample
 from DataStructure.LorentzVector import LorentzVector
@@ -104,10 +106,44 @@ def LeptonPZ(eventSample: EventSample) -> float:
     rotMtr = Matrix4x4.MakeRotationFromTo(pZ.V3d(), [0, 0, 1])
     pZDir = rotMtr.MultiplyVector(pZ)
     pLDir = rotMtr.MultiplyVector(pL)
+    v3dz = pZDir.V3d()
+    vsq = Constants.dot3d(v3dz, v3dz)
+    if vsq > 0.9999999999 or vsq < 0:
+        return 1000
     boostMtr = Matrix4x4.MakeBoost(pZDir.V3d())
     # pZRest = boostMtr.MultiplyVector(pZDir)
     pLRest = boostMtr.MultiplyVector(pLDir)
     return math.cos(pLRest.Theta())
+
+
+def LeptonPZAndGammaTheta(eventSample: EventSample) -> float:
+    lpz = LeptonPZ(eventSample)
+    gammaDegree = abs(PhotonDegreeCS(eventSample))
+    return (1 - gammaDegree) * (1 - gammaDegree) + lpz * lpz * 0.25
+
+
+def ZpAndGammaDirTest(eventSet: EventSet):
+    xList = []
+    # smallXlist = []
+    yList = []
+    # result_f = open(fileName, 'a')
+    for eventSample in eventSet.events:
+        largestPhotonIdx = -1
+        largestEa = -1.0
+        for i in range(len(eventSample.particles)):
+            if 0 == eventSample.particles[i].particleType:
+                if eventSample.particles[i].momentum.values[0] > largestEa:
+                    largestEa = eventSample.particles[i].momentum.values[0]
+                    largestPhotonIdx = i
+        momentumPhoton = eventSample.particles[largestPhotonIdx].momentum
+        lp = LeptonPZ(eventSample)
+        yList.append(lp)
+        xList.append(math.cos(momentumPhoton.Theta()))
+        # smallXlist.append(lp)
+    # result_f.close()
+    import matplotlib.pyplot as plt
+    plt.scatter(xList, yList, s=1)
+    plt.show()
 
 
 class ParticleNumberZA:

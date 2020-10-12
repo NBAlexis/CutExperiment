@@ -319,6 +319,18 @@ def PhotonDegree(eventSample: EventSample) -> float:
     return momentumPhoton.Theta()
 
 
+def PhotonDegreeCS(eventSample: EventSample) -> float:
+    largestPhotonIdx = -1
+    largestEa = -1.0
+    for i in range(len(eventSample.particles)):
+        if 0 == eventSample.particles[i].particleType:
+            if eventSample.particles[i].momentum.values[0] > largestEa:
+                largestEa = eventSample.particles[i].momentum.values[0]
+                largestPhotonIdx = i
+    momentumPhoton = eventSample.particles[largestPhotonIdx].momentum
+    return math.cos(momentumPhoton.Theta())
+
+
 def Megamma(eventSample: EventSample) -> float:
     largestPhotonIdx = -1
     largestEa = -1.0

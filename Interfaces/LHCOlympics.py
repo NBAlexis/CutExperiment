@@ -45,12 +45,12 @@ def LoadLHCOlympics(fileName: str) -> EventSet:
                     particleIndex = 0
             elif 11 == len(valueList):
                 if oneEvent is None:
-                    print("The first line should be a start record!\n")
+                    print("File {} has problem! The first line should be a start record!\n".format(fileName))
                     oneEvent = EventSample()
                     particleIndex = 0
                 particleIndex += 1
                 if particleIndex != int(valueList[0]):
-                    print("The particle Index is wrong!\n")
+                    print("File {} has problem! he particle Index is wrong!\n".format(fileName))
                 nTrack = float(valueList[6])
                 particleType = int(valueList[1])
                 oneParticle = Particle(
@@ -65,7 +65,7 @@ def LoadLHCOlympics(fileName: str) -> EventSet:
                 )
                 oneEvent.AddParticle(oneParticle)
             else:
-                print("This line is either 3 value nor 11 value: {}\n".format(lines))
+                print("File {} has problem! This line is either 3 value nor 11 value: {}\n".format(fileName, lines))
         if not (oneEvent is None):
             ret.AddEvent(oneEvent)
     return ret

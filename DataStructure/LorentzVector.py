@@ -1,4 +1,5 @@
 import math
+import sys
 
 
 class LorentzVector:
@@ -72,6 +73,23 @@ class LorentzVector:
     def PseudoRapidity(self) -> float:
         cs = self.values[3] / self.Momentum()
         return -math.log(math.tan(math.acos(cs)/2))
+
+    def R(self) -> float:
+        eta = self.PseudoRapidity()
+        phi = self.Azimuth()
+        ToBeSqrt = eta * eta + phi * phi
+        if ToBeSqrt < 0:
+            return 0.0
+        return math.sqrt(ToBeSqrt)
+
+    def Y(self) -> float:
+        denominator = self.values[0] - self.values[3]
+        if denominator <= 0:
+            return sys.float_info.max
+        denominator = (self.values[0] + self.values[3]) / denominator
+        if denominator <= 0:
+            return sys.float_info.max
+        return 0.5 * math.log(denominator)
 
     def Pt(self) -> float:
         return math.sqrt(self.values[1] * self.values[1] + self.values[2] * self.values[2])
