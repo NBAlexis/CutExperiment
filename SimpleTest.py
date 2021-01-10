@@ -32,12 +32,23 @@ class ParticleTheta:
 idx = 0
 idx2 = 0
 maximumAllowedAngle = 0.93
+ptmin1 = 0.01
+ptmin2 = 0.05
+ptmin3 = 0.1
 bSkipFirstLine = True
 bFirstLine = True
-fileName2 = "_DataFolder/lambda/evt.log"
-fileName3 = "_DataFolder/lambda/evt4.log"
-with open(fileName2) as f:
-    f2 = open(fileName3, "w")
+fileName = "_DataFolder/lambda/evt.log"
+fileName1 = "_DataFolder/lambda/restframe.log"
+fileName2 = "_DataFolder/lambda/restframe-093.log"
+fileName3 = "_DataFolder/lambda/restframe-093-pt10.log"
+fileName4 = "_DataFolder/lambda/restframe-093-pt30.log"
+fileName5 = "_DataFolder/lambda/restframe-093-pt50.log"
+with open(fileName) as f:
+    f1 = open(fileName1, "w")
+    f2 = open(fileName2, "w")
+    f3 = open(fileName3, "w")
+    f4 = open(fileName4, "w")
+    f5 = open(fileName5, "w")
     for lines in f.readlines():
         if bFirstLine:
             bFirstLine = False
@@ -48,20 +59,25 @@ with open(fileName2) as f:
             print("line have no 17 element: " + lines)
             continue
         idx = idx + 1
-        print(str(idx) + "/8486824")
+        print(str(idx) + "/10000000")
         valueList = lines.split()
         p1 = LorentzVector(float(valueList[4]), float(valueList[1]), float(valueList[2]), float(valueList[3]))
         p2 = LorentzVector(float(valueList[8]), float(valueList[5]), float(valueList[6]), float(valueList[7]))
         p3 = LorentzVector(float(valueList[12]), float(valueList[9]), float(valueList[10]), float(valueList[11]))
         p4 = LorentzVector(float(valueList[16]), float(valueList[13]), float(valueList[14]), float(valueList[15]))
+        toosmallangle = False
         if abs(cos(p1.Theta())) > maximumAllowedAngle:
-            continue
+            toosmallangle = True
         if abs(cos(p2.Theta())) > maximumAllowedAngle:
-            continue
+            toosmallangle = True
         if abs(cos(p3.Theta())) > maximumAllowedAngle:
-            continue
+            toosmallangle = True
         if abs(cos(p4.Theta())) > maximumAllowedAngle:
-            continue
+            toosmallangle = True
+        pt1 = p1.Pt()
+        pt2 = p2.Pt()
+        pt3 = p3.Pt()
+        pt4 = p4.Pt()
         plambda1 = p1 + p2
         plambda2 = p3 + p4
         # print("plambda1={} plambda2={}".format(str(plambda1), str(plambda2)))
@@ -98,7 +114,7 @@ with open(fileName2) as f:
         costheta = cos(plambda1.Theta())
         m1 = p1final.Momentum()
         m3 = p3final.Momentum()
-        f2.write("{} {} {} {} {} {} {}\n".format(
+        f1.write("{} {} {} {} {} {} {}\n".format(
             costheta,
             p1final.values[1] / m1,
             p1final.values[2] / m1,
@@ -107,9 +123,56 @@ with open(fileName2) as f:
             p3final.values[2] / m3,
             p3final.values[3] / m3
         ))
-        f2.flush()
-
+        if not toosmallangle:
+            f2.write("{} {} {} {} {} {} {}\n".format(
+                costheta,
+                p1final.values[1] / m1,
+                p1final.values[2] / m1,
+                p1final.values[3] / m1,
+                p3final.values[1] / m3,
+                p3final.values[2] / m3,
+                p3final.values[3] / m3
+            ))
+            if pt1 > ptmin1 and pt2 > ptmin1 and pt3 > ptmin1 and pt4 > ptmin1:
+                f3.write("{} {} {} {} {} {} {}\n".format(
+                    costheta,
+                    p1final.values[1] / m1,
+                    p1final.values[2] / m1,
+                    p1final.values[3] / m1,
+                    p3final.values[1] / m3,
+                    p3final.values[2] / m3,
+                    p3final.values[3] / m3
+                ))
+            if pt1 > ptmin2 and pt2 > ptmin2 and pt3 > ptmin2 and pt4 > ptmin2:
+                f4.write("{} {} {} {} {} {} {}\n".format(
+                    costheta,
+                    p1final.values[1] / m1,
+                    p1final.values[2] / m1,
+                    p1final.values[3] / m1,
+                    p3final.values[1] / m3,
+                    p3final.values[2] / m3,
+                    p3final.values[3] / m3
+                ))
+            if pt1 > ptmin3 and pt2 > ptmin3 and pt3 > ptmin3 and pt4 > ptmin3:
+                f5.write("{} {} {} {} {} {} {}\n".format(
+                    costheta,
+                    p1final.values[1] / m1,
+                    p1final.values[2] / m1,
+                    p1final.values[3] / m1,
+                    p3final.values[1] / m3,
+                    p3final.values[2] / m3,
+                    p3final.values[3] / m3
+                ))
+    f1.flush()
+    f2.flush()
+    f3.flush()
+    f4.flush()
+    f5.flush()
+f1.close()
 f2.close()
+f3.close()
+f4.close()
+f5.close()
 """
 
 # """
@@ -117,7 +180,9 @@ f2.close()
 idx = 0
 binCount = 40
 sep = 2.0 / binCount
-fileName3 = "_DataFolder/lambda/evt4.log"
+# fileheader = "restframe"
+fileheader = "restframe-093-pt50"
+fileName3 = "_DataFolder/lambda/" + fileheader + ".log"
 lstn1xn2x = [0 for i in range(binCount)]
 lstn1xn2y = [0 for i in range(binCount)]
 lstn1xn2z = [0 for i in range(binCount)]
@@ -147,22 +212,23 @@ with open(fileName3) as f:
         lstn1zn2y[lstIdx] = lstn1zn2y[lstIdx] + float(valueList[3]) * float(valueList[5])
         lstn1zn2z[lstIdx] = lstn1zn2z[lstIdx] + float(valueList[3]) * float(valueList[6])
         idx = idx + 1
-        print(str(idx) + "/8486824")
+        print(str(idx) + "/10000000")
 
-fileName4 = "_DataFolder/lambda/evt6.csv"
+fileName4 = "_DataFolder/lambda/" + fileheader + ".csv"
 f = open(fileName4, "w")
 for i in range(binCount):
     print("count = {}".format(countall[i]))
-    f.write("{}, {}, {}, {}, {}, {}, {}, {}, {}\n".format(
-        lstn1xn2x[i] / countall[i],
-        lstn1xn2y[i] / countall[i],
-        lstn1xn2z[i] / countall[i],
-        lstn1yn2x[i] / countall[i],
-        lstn1yn2y[i] / countall[i],
-        lstn1yn2z[i] / countall[i],
-        lstn1zn2x[i] / countall[i],
-        lstn1zn2y[i] / countall[i],
-        lstn1zn2z[i] / countall[i]
+    f.write("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}\n".format(
+        countall[i],
+        0 if countall[i] == 0 else lstn1xn2x[i] / countall[i],
+        0 if countall[i] == 0 else lstn1xn2y[i] / countall[i],
+        0 if countall[i] == 0 else lstn1xn2z[i] / countall[i],
+        0 if countall[i] == 0 else lstn1yn2x[i] / countall[i],
+        0 if countall[i] == 0 else lstn1yn2y[i] / countall[i],
+        0 if countall[i] == 0 else lstn1yn2z[i] / countall[i],
+        0 if countall[i] == 0 else lstn1zn2x[i] / countall[i],
+        0 if countall[i] == 0 else lstn1zn2y[i] / countall[i],
+        0 if countall[i] == 0 else lstn1zn2z[i] / countall[i]
     ))
 f.flush()
 f.close()

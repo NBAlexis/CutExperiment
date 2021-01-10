@@ -70,6 +70,7 @@ class LorentzVector:
     def Momentum(self) -> float:
         return math.sqrt(self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
 
+    # PseudoRapidity = - log (tan(theta / 2)) \approx y
     def PseudoRapidity(self) -> float:
         cs = self.values[3] / self.Momentum()
         return -math.log(math.tan(math.acos(cs)/2))
@@ -82,6 +83,7 @@ class LorentzVector:
             return 0.0
         return math.sqrt(ToBeSqrt)
 
+    # Rapidity = log((E + pz) / (E - pz)) / 2
     def Y(self) -> float:
         denominator = self.values[0] - self.values[3]
         if denominator <= 0:

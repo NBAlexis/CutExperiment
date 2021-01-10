@@ -103,7 +103,7 @@ def Yjj2Filter(eventSample: EventSample) -> float:
     if largestJetIndex1 > 0 and largestJetIndex2 > 0:
         p1 = eventSample.particles[largestJetIndex1 - 1].momentum
         p2 = eventSample.particles[largestJetIndex2 - 1].momentum
-        return abs(p1.PseudoRapidity() - p2.PseudoRapidity())
+        return abs(p1.Y() - p2.Y())
     return 0.0
 
 

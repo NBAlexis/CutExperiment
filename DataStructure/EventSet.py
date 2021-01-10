@@ -14,6 +14,11 @@ class EventSet:
     def GetEventCount(self) -> int:
         return len(self.events)
 
+    def GetCopy(self):
+        ret = EventSet()
+        ret.events = self.events.copy()
+        return ret
+
     def DebugPrint(self, i: int):
         print(self.events[i].DebugPrint())
 

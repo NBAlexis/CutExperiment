@@ -122,6 +122,47 @@ def LeptonPZAndGammaTheta(eventSample: EventSample) -> float:
     return (1 - gammaDegree) * (1 - gammaDegree) + lpz * lpz * 0.25
 
 
+def DeltaRMin(eventSample: EventSample) -> float:
+    minR = 10000.0
+    etaList = []
+    phiList = []
+    for particle in eventSample.particles:
+        if ParticleType.Electron == particle.particleType or ParticleType.Muon == particle.particleType:
+            etaList.append(particle.momentum.PseudoRapidity())
+            phiList.append(particle.momentum.Azimuth())
+    for a in range(0, len(etaList)):
+        for b in range(a + 1, len(etaList)):
+            thisDeltaR = (etaList[a] - etaList[b]) * (etaList[a] - etaList[b]) + (phiList[a] - phiList[b]) * (phiList[a] - phiList[b])
+            thisDeltaR = 0 if thisDeltaR < 0 else math.sqrt(thisDeltaR)
+            if minR > thisDeltaR:
+                minR = thisDeltaR
+    return minR
+
+
+def DeltaR(eventSample: EventSample) -> float:
+    largestLM1 = 0
+    largestLM2 = 0
+    largestLIndex1 = 0
+    largestLIndex2 = 0
+    for particle in eventSample.particles:
+        if ParticleType.Electron == particle.particleType or ParticleType.Muon == particle.particleType:
+            momentum = particle.momentum.Momentum()
+            if momentum > largestLM1:
+                largestLM2 = largestLM1
+                largestLIndex2 = largestLIndex1
+                largestLM1 = momentum
+                largestLIndex1 = particle.index
+            elif momentum > largestLM2:
+                largestLM2 = momentum
+                largestLIndex2 = particle.index
+    y1 = eventSample.particles[largestLIndex1 - 1].momentum.PseudoRapidity()
+    y2 = eventSample.particles[largestLIndex2 - 1].momentum.PseudoRapidity()
+    phi1 = eventSample.particles[largestLIndex1 - 1].momentum.Azimuth()
+    phi2 = eventSample.particles[largestLIndex2 - 1].momentum.Azimuth()
+    beforeSqrt = (y1 - y2) * (y1 - y2) + (phi1 - phi2) * (phi1 - phi2)
+    return 0 if beforeSqrt < 0 else math.sqrt(beforeSqrt)
+
+
 def ZpAndGammaDirTest(eventSet: EventSet):
     xList = []
     # smallXlist = []
@@ -176,7 +217,7 @@ class ParticleNumberZA:
                     largestLIndex2 = particle.index
             if ParticleType.Photon == particle.particleType:
                 photonCount += 1
-        if jetCount < 2:
+        if jetCount < 2:  # or jetCount > 4:
             return True
         if photonCount < 1:
             return True
@@ -213,3 +254,30 @@ class SHatZACut:
         if self.minV > 0:
             return SHatZA(eventSample) < self.minV
         return SHatZA(eventSample) > self.maxV
+
+
+class RZACut:
+    def __init__(self, minV: float, maxV: float):
+        self.minV = minV
+        self.maxV = maxV
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        if self.minV > 0:
+            return LeptonPZAndGammaTheta(eventSample) < self.minV
+        return LeptonPZAndGammaTheta(eventSample) > self.maxV
+
+
+class DeltaRCut:
+    def __init__(self, rValue: float):
+        self.rValue = rValue
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        return DeltaRMin(eventSample) < self.rValue
+
+
+class DeltaRCutM:
+    def __init__(self, rValue: float):
+        self.rValue = rValue
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        return DeltaR(eventSample) > self.rValue

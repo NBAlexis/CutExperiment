@@ -130,7 +130,7 @@ class StandardVBFCut:
             p2 = eventSample.particles[largestJetIndex2 - 1].momentum
         else:
             return True
-        yjj = abs(p1.PseudoRapidity() - p2.PseudoRapidity())
+        yjj = abs(p1.Y() - p2.Y())
         if self.onlyHardestMjj:
             hardestP = p1 + p2
             beforeSqrt = 2.0 * (hardestP * hardestP)
