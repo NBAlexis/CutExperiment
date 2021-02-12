@@ -34,8 +34,8 @@ while changedPointCount > 0:
     type0Count = 0
     type1Center = [0, 0, 0]
     type1Count = 0
-    for i in range(0, 100):
-        if 0 == dataSample[i][4]:
+    for i in range(0, len(dataSample)):
+        if 0 == dataSample[i][13]:
             type0Center[0] = type0Center[0] + dataSample[i][0]
             type0Center[1] = type0Center[1] + dataSample[i][1]
             type0Center[2] = type0Center[2] + dataSample[i][2]
@@ -62,14 +62,14 @@ while changedPointCount > 0:
                               + (type1Center[2] - dataSample[i][2])**2)
         if distance0 < distance1:
             # 把它分配到0，分配前看看是不是改变了
-            if dataSample[i][4] != 0:
+            if dataSample[i][13] != 0:
                 changedPointCount = changedPointCount + 1
-                dataSample[i][4] = 0
+                dataSample[i][13] = 0
         else:
             # 把它分配到1
-            if dataSample[i][4] != 1:
+            if dataSample[i][13] != 1:
                 changedPointCount = changedPointCount + 1
-                dataSample[i][4] = 1
+                dataSample[i][13] = 1
     print("发生改变的点数量：", changedPointCount)
 
 # 上面的代码，如果changedPointCount > 0，会自动跳到2，如果不再改变会自动结束循环

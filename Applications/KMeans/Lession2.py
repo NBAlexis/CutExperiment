@@ -113,6 +113,7 @@ print("结果9：", "第一个事例，粒子的数量", len(allEvents.events[0]
 # 我们挑出这些事例，并把他们的动量（3个粒子，每个动量是4矢量）一共12个数字排成一个数组。
 #########################################
 from DataStructure.Particles import *
+import random
 resultList = []
 loopLength = 20  # 虽然我们有500000个事例，但作为例子，我们只看前20个事例
 for i in range(0, loopLength):
@@ -164,17 +165,19 @@ for i in range(0, loopLength):
     if largestPhotonIndex >= 0 and largestElectronIndex >= 0 and largestAntiElectronIndex >= 0:
         # 如果我们找到了光子，正负电子对，那么按照电子，反电子，光子，把动量做成一个数组，加入到resultList
         # 一行写不下了，可以用 \换行（不推荐这种写法）
-        momentumList = theEvent.particles[largestElectronIndex].momentum.values \
-                       + theEvent.particles[largestAntiElectronIndex].momentum.values \
-                       + theEvent.particles[largestPhotonIndex].momentum.values
+        dot1 = theEvent.particles[largestElectronIndex].momentum * theEvent.particles[largestAntiElectronIndex].momentum
+        dot2 = theEvent.particles[largestElectronIndex].momentum * theEvent.particles[largestPhotonIndex].momentum
+        dot3 = theEvent.particles[largestAntiElectronIndex].momentum * theEvent.particles[largestPhotonIndex].momentum
+        momentumList = [dot1, dot2, dot3] + [0, random.randint(0, 1)]
         resultList = resultList + [momentumList]
         print("事例", i, "的内容是\n")
         print(theEvent.DebugPrint())
         print("我们找到正负电子对和光子，结果是", momentumList, "\n")
     elif largestPhotonIndex >= 0 and largestMuonIndex >= 0 and largestAntiMuonIndex >= 0:
-        momentumList = theEvent.particles[largestElectronIndex].momentum.values \
-                       + theEvent.particles[largestAntiElectronIndex].momentum.values \
-                       + theEvent.particles[largestPhotonIndex].momentum.values
+        dot1 = theEvent.particles[largestMuonIndex].momentum * theEvent.particles[largestAntiMuonIndex].momentum
+        dot2 = theEvent.particles[largestMuonIndex].momentum * theEvent.particles[largestPhotonIndex].momentum
+        dot3 = theEvent.particles[largestAntiMuonIndex].momentum * theEvent.particles[largestPhotonIndex].momentum
+        momentumList = [dot1, dot2, dot3] + [0, random.randint(0, 1)]
         resultList = resultList + [momentumList]
         print("事例", i, "的内容是\n")
         print(theEvent.DebugPrint())
@@ -183,6 +186,80 @@ for i in range(0, loopLength):
         print("事例", i, "的内容是\n")
         print(theEvent.DebugPrint())
         print("我们没找到正负电子（缪子）对和光子\n")
+
+"""
+allEvents2 = LoadLHCOlympics("nTGC-....lhco")
+for i in range(0, loopLength):
+    theEvent = allEvents2.events[i]
+    largestPhotonIndex = -1  # 对于一个list, list[i] 这个i通常叫index
+    largestPhotonEnergy = 0
+    largestElectronIndex = -1
+    largestElectronEnergy = 0
+    largestAntiElectronIndex = -1
+    largestAntiElectronEnergy = 0
+    largestMuonIndex = -1
+    largestMuonEnergy = 0
+    largestAntiMuonIndex = -1
+    largestAntiMuonEnergy = 0
+    for theParticle in theEvent.particles:
+        if theParticle.particleType == ParticleType.Photon:
+            # 我们找到一个光子，看看它的能量
+            photonEnergy = theParticle.momentum.Momentum()
+            if photonEnergy > largestPhotonEnergy:
+                largestPhotonEnergy = photonEnergy
+                # 注意，列表的index是Particles.index - 1，这是CutExperiment库规定的规则
+                largestPhotonIndex = theParticle.index - 1
+        elif theParticle.particleType == ParticleType.Electron:
+            # PDGId > 0的粒子是正常粒子（即带负电的电子），这是CutExperiment库规定的规则
+            if theParticle.PGDid > 0:
+                electronEnergy = theParticle.momentum.Momentum()
+                if electronEnergy > largestElectronEnergy:
+                    largestElectronEnergy = electronEnergy
+                    largestElectronIndex = theParticle.index - 1
+            else:
+                # PDGId < 0的粒子是反物质粒子（即带正电的反电子，也叫正电子），这是CutExperiment库规定的规则
+                antielectronEnergy = theParticle.momentum.Momentum()
+                if antielectronEnergy > largestAntiElectronEnergy:
+                    largestAntiElectronEnergy = antielectronEnergy
+                    largestAntiElectronIndex = theParticle.index - 1
+        elif theParticle.particleType == ParticleType.Muon:
+            # 基本是照抄上面的
+            if theParticle.PGDid > 0:
+                muonEnergy = theParticle.momentum.Momentum()
+                if muonEnergy > largestMuonEnergy:
+                    largestMuonEnergy = muonEnergy
+                    largestMuonIndex = theParticle.index - 1
+            else:
+                antimuonEnergy = theParticle.momentum.Momentum()
+                if antimuonEnergy > largestAntiMuonEnergy:
+                    largestAntiMuonEnergy = antimuonEnergy
+                    largestAntiMuonIndex = theParticle.index - 1
+    # 到这里，我们已经用for查看了所有粒子
+    if largestPhotonIndex >= 0 and largestElectronIndex >= 0 and largestAntiElectronIndex >= 0:
+        # 如果我们找到了光子，正负电子对，那么按照电子，反电子，光子，把动量做成一个数组，加入到resultList
+        # 一行写不下了，可以用 \换行（不推荐这种写法）
+        momentumList = theEvent.particles[largestElectronIndex].momentum.values \
+                       + theEvent.particles[largestAntiElectronIndex].momentum.values \
+                       + theEvent.particles[largestPhotonIndex].momentum.values \
+                       + [1, random.randint(0, 1)]
+        resultList = resultList + [momentumList]
+        print("事例", i, "的内容是\n")
+        print(theEvent.DebugPrint())
+        print("我们找到正负电子对和光子，结果是", momentumList, "\n")
+    elif largestPhotonIndex >= 0 and largestMuonIndex >= 0 and largestAntiMuonIndex >= 0:
+        momentumList = theEvent.particles[largestMuonIndex].momentum.values \
+                       + theEvent.particles[largestAntiMuonIndex].momentum.values \
+                       + theEvent.particles[largestPhotonIndex].momentum.values \
+                       + [1, random.randint(0, 1)]
+        resultList = resultList + [momentumList]
+        print("事例", i, "的内容是\n")
+        print(theEvent.DebugPrint())
+        print("我们找到正负缪子对和光子，结果是", momentumList, "\n")
+    else:
+        print("事例", i, "的内容是\n")
+        print(theEvent.DebugPrint())
+        print("我们没找到正负电子（缪子）对和光子\n")
+"""
 
 print("\n\n最终结果:\n", resultList)
 # 接下来，把resultList保存成一个.csv文件就可以了。
