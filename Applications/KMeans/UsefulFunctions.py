@@ -86,6 +86,118 @@ def ChooseEvents(allEvents: EventSet, count: int, tag: int) -> list:
     return result
 
 
+def ChooseEvents3D(allEvents: EventSet, count: int, tag: int) -> list:
+    result = []
+    idx = 0
+    while len(result) < count:
+        theEvent = allEvents.events[idx]
+        largestJetIndex = -1  # 对于一个list, list[i] 这个i通常叫index
+        largestJetEnergy = 0
+        secondJetIndex = -1  # 对于一个list, list[i] 这个i通常叫index
+        secondJetEnergy = 0
+        largestLeptonIndex = -1
+        largestLeptonEnergy = 0
+        largestAntiLeptonIndex = -1
+        largestAntiLeptonEnergy = 0
+        missingIndex = -1
+        for theParticle in theEvent.particles:
+            if theParticle.particleType == ParticleType.Jet:
+                jetEnergy = theParticle.momentum.Momentum()
+                if jetEnergy > largestJetEnergy:
+                    secondJetIndex = largestJetIndex
+                    secondJetEnergy = largestJetEnergy
+                    largestJetIndex = theParticle.index - 1
+                    largestJetEnergy = jetEnergy
+                elif jetEnergy > secondJetEnergy:
+                    secondJetIndex = theParticle.index - 1
+                    secondJetEnergy = jetEnergy
+            elif theParticle.particleType == ParticleType.Electron or theParticle.particleType == ParticleType.Muon:
+                if theParticle.PGDid > 0:
+                    leptonEnergy = theParticle.momentum.Momentum()
+                    if leptonEnergy > largestLeptonEnergy:
+                        largestLeptonEnergy = leptonEnergy
+                        largestLeptonIndex = theParticle.index - 1
+                else:
+                    antielLeptonEnergy = theParticle.momentum.Momentum()
+                    if antielLeptonEnergy > largestAntiLeptonEnergy:
+                        largestAntiLeptonEnergy = antielLeptonEnergy
+                        largestAntiLeptonIndex = theParticle.index - 1
+            elif theParticle.particleType == ParticleType.Missing:
+                missingIndex = theParticle.index - 1
+        if largestJetIndex >= 0 and secondJetIndex >= 0 \
+                and largestLeptonIndex >= 0 and largestAntiLeptonIndex >= 0:
+            p1 = theEvent.particles[largestJetIndex].momentum
+            p2 = theEvent.particles[secondJetIndex].momentum
+            p3 = theEvent.particles[largestLeptonIndex].momentum
+            p4 = theEvent.particles[largestAntiLeptonIndex].momentum
+            ptMissing = theEvent.particles[missingIndex].momentum
+            # 列表是4个动量的点乘(6个结果) + type1 + length1 + length2
+            # type1 = 0, 1, 2, 3, 4, 5 对应SM, alpha0, 1, 2, 3, 4
+            # length1是一次isolate forest的长度
+            # length2是n次isolate forest的平均长度
+            # momentumList = [ptMissing, p1 * p2, p1 * p3, p1 * p4, p2 * p3, p2 * p4, p3 * p4] + [tag, 0, 0]
+            momentumList = [ptMissing.Pt(), p1 * p2, p3 * p4] + [tag, 0, 0]
+            result = result + [momentumList]
+        idx = idx + 1
+    return result
+
+
+def ChooseEvents2D(allEvents: EventSet, count: int, tag: int) -> list:
+    result = []
+    idx = 0
+    while len(result) < count:
+        theEvent = allEvents.events[idx]
+        largestJetIndex = -1  # 对于一个list, list[i] 这个i通常叫index
+        largestJetEnergy = 0
+        secondJetIndex = -1  # 对于一个list, list[i] 这个i通常叫index
+        secondJetEnergy = 0
+        largestLeptonIndex = -1
+        largestLeptonEnergy = 0
+        largestAntiLeptonIndex = -1
+        largestAntiLeptonEnergy = 0
+        missingIndex = -1
+        for theParticle in theEvent.particles:
+            if theParticle.particleType == ParticleType.Jet:
+                jetEnergy = theParticle.momentum.Momentum()
+                if jetEnergy > largestJetEnergy:
+                    secondJetIndex = largestJetIndex
+                    secondJetEnergy = largestJetEnergy
+                    largestJetIndex = theParticle.index - 1
+                    largestJetEnergy = jetEnergy
+                elif jetEnergy > secondJetEnergy:
+                    secondJetIndex = theParticle.index - 1
+                    secondJetEnergy = jetEnergy
+            elif theParticle.particleType == ParticleType.Electron or theParticle.particleType == ParticleType.Muon:
+                if theParticle.PGDid > 0:
+                    leptonEnergy = theParticle.momentum.Momentum()
+                    if leptonEnergy > largestLeptonEnergy:
+                        largestLeptonEnergy = leptonEnergy
+                        largestLeptonIndex = theParticle.index - 1
+                else:
+                    antielLeptonEnergy = theParticle.momentum.Momentum()
+                    if antielLeptonEnergy > largestAntiLeptonEnergy:
+                        largestAntiLeptonEnergy = antielLeptonEnergy
+                        largestAntiLeptonIndex = theParticle.index - 1
+            elif theParticle.particleType == ParticleType.Missing:
+                missingIndex = theParticle.index - 1
+        if largestJetIndex >= 0 and secondJetIndex >= 0 \
+                and largestLeptonIndex >= 0 and largestAntiLeptonIndex >= 0:
+            p1 = theEvent.particles[largestJetIndex].momentum
+            p2 = theEvent.particles[secondJetIndex].momentum
+            p3 = theEvent.particles[largestLeptonIndex].momentum
+            p4 = theEvent.particles[largestAntiLeptonIndex].momentum
+            ptMissing = theEvent.particles[missingIndex].momentum
+            # 列表是4个动量的点乘(6个结果) + type1 + length1 + length2
+            # type1 = 0, 1, 2, 3, 4, 5 对应SM, alpha0, 1, 2, 3, 4
+            # length1是一次isolate forest的长度
+            # length2是n次isolate forest的平均长度
+            # momentumList = [ptMissing, p1 * p2, p1 * p3, p1 * p4, p2 * p3, p2 * p4, p3 * p4] + [tag, 0, 0]
+            momentumList = [ptMissing.Pt(), p3 * p4] + [tag, 0, 0]
+            result = result + [momentumList]
+        idx = idx + 1
+    return result
+
+
 def ChooseEventsAll(fileName: str) -> list:
     allEvents = LoadLHCOlympics(fileName)
     result = []
