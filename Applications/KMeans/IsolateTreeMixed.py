@@ -9,12 +9,12 @@ from UsefulFunctions import *
 
 # =============== WW 用这个 ===============
 N = 18
-csvFileName = "v3event.csv"
-saveCSVFileName = "resultv3.csv"
+csvFileName = "v3event-n4.csv"
+saveCSVFileName = "resultv3-n4.csv"
 
 dataSample = ReadCSVFile(csvFileName, 0, N + 2)
 
-loopCount = 20
+loopCount = 400
 for n in range(0, loopCount):
     print("==================={}===================\n".format(n))
     rootTree = IsolateTree(dataSample, N, -1)
@@ -48,7 +48,7 @@ for thePoint in dataSample:
         averAnorm = averAnorm + thePoint[N + 1]
         countAnorm = countAnorm + 1
 
-averageNor = averageNor / countNor
-averAnorm = averAnorm / countAnorm
-print("Normal", minNor, averageNor, "Anormaly", minAnorm, maxAnorm, averAnorm)
+# averageNor = averageNor / countNor
+# averAnorm = averAnorm / countAnorm
+# print("Normal", minNor, averageNor, "Anormaly", minAnorm, maxAnorm, averAnorm)
 SaveCSVFile(saveCSVFileName, dataSample, N, N + 1)

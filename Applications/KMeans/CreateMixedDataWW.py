@@ -32,11 +32,21 @@ CutEvents(v3Event, leptonNumberCut)
 
 signalSamples = [v0Event, v3Event]
 
+"""
 for i in range(0, 2):
     resultList = ChooseEvents(smEvent, lst1[i], 0)
     resultList = resultList + ChooseEvents(ttEvent, lst2[i], 1)
     resultList = resultList + ChooseEvents(signalSamples[i], 50, 2)
     SaveCSVFile(fileNamelst[i], resultList, 0, 18 + 2)
     print(fileNamelst[i], " saved!")
+"""
+
+fileNamelst2 = ["v3event-n0.csv", "v3event-n1.csv", "v3event-n2.csv", "v3event-n3.csv", "v3event-n4.csv"]
+for i in range(0, 5):
+    resultList = ChooseEvents(smEvent, lst1[1], 0)
+    resultList = resultList + ChooseEvents(ttEvent, lst2[1], 1)
+    resultList = resultList + ChooseEvents(signalSamples[1], 10 * i, 2)
+    SaveCSVFile(fileNamelst2[i], resultList, 0, 18 + 2)
+    print(fileNamelst2[i], " saved!")
 
 print("Finished")
