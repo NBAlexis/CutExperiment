@@ -5,16 +5,16 @@
 # or point = [x1, x2, x3, ... ,xN, type1]
 ###################################
 from Applications.KMeans.IsolateTree import IsolateTree
-from UsefulFunctions import *
+from Applications.KMeans.UsefulFunctions import *
 
 # =============== WW 用这个 ===============
 N = 18
 csvFileName = "v3event-n4.csv"
-saveCSVFileName = "resultv3-n4.csv"
+saveCSVFileName = "resultv3-n4-1.csv"
 
 dataSample = ReadCSVFile(csvFileName, 0, N + 2)
 
-loopCount = 400
+loopCount = 800
 for n in range(0, loopCount):
     print("==================={}===================\n".format(n))
     rootTree = IsolateTree(dataSample, N, -1)
