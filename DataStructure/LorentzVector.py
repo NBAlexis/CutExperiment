@@ -72,7 +72,10 @@ class LorentzVector:
 
     # PseudoRapidity = - log (tan(theta / 2)) \approx y
     def PseudoRapidity(self) -> float:
-        cs = self.values[3] / self.Momentum()
+        momentum = self.Momentum()
+        if momentum < 1.0e-12:
+            return 0.0
+        cs = self.values[3] / momentum
         return -math.log(math.tan(math.acos(cs)/2))
 
     def R(self) -> float:

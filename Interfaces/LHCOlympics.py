@@ -63,9 +63,74 @@ def LoadLHCOlympics(fileName: str) -> EventSet:
                     0.0,  # Decay Length
                     0.0  # Hecility
                 )
+                oneParticle.SetLHCOOtherInfo(float(valueList[6]), float(valueList[7]), float(valueList[8]))
                 oneEvent.AddParticle(oneParticle)
             else:
                 print("File {} has problem! This line is either 3 value nor 11 value: {}\n".format(fileName, lines))
         if not (oneEvent is None):
             ret.AddEvent(oneEvent)
     return ret
+
+
+def LHCOPutSpaces(contents: str, length: int) -> str:
+    for i in range(len(contents), length):
+        contents = " " + contents
+    return contents
+
+
+def LHCOParticleTypeNumber(particleType: ParticleType) -> int:
+    if particleType == ParticleType.Electron:
+        return 1
+    elif particleType == ParticleType.Photon:
+        return 0
+    elif particleType == ParticleType.Muon:
+        return 2
+    elif particleType == ParticleType.Jet:
+        return 4
+    elif particleType == ParticleType.Tau:
+        return 3
+    elif particleType == ParticleType.Intermediate:
+        return 5
+    # Missing
+    return 6
+
+
+def SaveToLHCO(fileName: str, event: EventSet):
+    result_f = open(fileName, 'w')
+    columnLength = [4, 6, 9, 9, 8, 8, 7, 7, 8, 7, 7]
+    line = LHCOPutSpaces("#", columnLength[0])
+    line = line + LHCOPutSpaces("typ", columnLength[1])
+    line = line + LHCOPutSpaces("eta", columnLength[2])
+    line = line + LHCOPutSpaces("phi", columnLength[3])
+    line = line + LHCOPutSpaces("pt", columnLength[4])
+    line = line + LHCOPutSpaces("jmas", columnLength[5])
+    line = line + LHCOPutSpaces("ntrk", columnLength[6])
+    line = line + LHCOPutSpaces("btag", columnLength[7])
+    line = line + LHCOPutSpaces("had/em", columnLength[8])
+    line = line + LHCOPutSpaces("dum1", columnLength[9])
+    line = line + LHCOPutSpaces("dum2", columnLength[10])
+    result_f.write("{}\n".format(line))
+    eventIdx: int = 0
+    for eventSample in event.events:
+        line = LHCOPutSpaces("0", columnLength[0])
+        line = line + LHCOPutSpaces(str(eventIdx), columnLength[1] + columnLength[2])
+        line = line + LHCOPutSpaces("0", columnLength[3])
+        result_f.write("{}\n".format(line))
+        eventIdx = eventIdx + 1
+        particleIdx: int = 1
+        for particle in eventSample.particles:
+            line = LHCOPutSpaces(str(particleIdx), columnLength[0])
+            particleIdx = particleIdx + 1
+            line = line + LHCOPutSpaces(str(LHCOParticleTypeNumber(particle.particleType)), columnLength[1])
+            line = line + LHCOPutSpaces('{:.3f}'.format(particle.momentum.PseudoRapidity()), columnLength[2])
+            line = line + LHCOPutSpaces('{:.3f}'.format(particle.momentum.Azimuth()), columnLength[3])
+            line = line + LHCOPutSpaces('{:.2f}'.format(particle.momentum.Pt()), columnLength[4])
+            line = line + LHCOPutSpaces('{:.2f}'.format(particle.momentum.Mass()), columnLength[5])
+            line = line + LHCOPutSpaces('{:.1f}'.format(particle.nTrack), columnLength[6])
+            line = line + LHCOPutSpaces('{:.1f}'.format(particle.bTag), columnLength[7])
+            line = line + LHCOPutSpaces('{:.2f}'.format(particle.hadEm), columnLength[8])
+            line = line + LHCOPutSpaces('0.0', columnLength[9])
+            line = line + LHCOPutSpaces('0.0', columnLength[10])
+            result_f.write("{}\n".format(line))
+    result_f.close()
+

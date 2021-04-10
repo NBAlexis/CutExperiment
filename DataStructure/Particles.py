@@ -75,6 +75,14 @@ class Particle:
         self.mass = mass
         self.decayLength = decayLength
         self.hecility = hecility
+        self.nTrack = 0
+        self.bTag = 0
+        self.hadEm = 0
+
+    def SetLHCOOtherInfo(self, nTrack: float, bTag: float, hadEm: float):
+        self.nTrack = nTrack
+        self.bTag = bTag
+        self.hadEm = hadEm
 
     def __str__(self) -> str:
         return self.DebugPrint()
