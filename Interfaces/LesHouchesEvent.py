@@ -109,3 +109,47 @@ def LoadLesHouchesEvent(fileName: str) -> EventSet:
                 oneEvent.AddParticle(oneParticle)
             ret.AddEvent(oneEvent)
     return ret
+
+
+def LoadLargeLesHouchesEvent(fileName: str, debugCount: bool) -> EventSet:
+    ret = EventSet()
+    fileContent = open(fileName, 'r')
+    nextLine = fileContent.readline()
+    oneBlock = False
+    lines = []
+    eventCount = 1
+    while nextLine:
+        if nextLine.startswith('<event>') and not oneBlock:
+            oneBlock = True
+            lines = []
+        elif nextLine.startswith('</event>') and oneBlock:
+            oneBlock = False
+            if len(lines) > 0:
+                event_header = lines[0].strip()
+                num_part = int(event_header.split()[0].strip())
+                oneEvent = EventSample()
+                if debugCount:
+                    print("Add event", eventCount, num_part, "particles")
+                    eventCount = eventCount + 1
+                for i in range(1, num_part + 1):
+                    part_data = lines[i].strip().split()
+                    pdgId: int = int(part_data[0])
+                    statusCode: int = int(part_data[1])
+                    particleType = ParticleType.Intermediate if -2 == statusCode or 2 == statusCode or -3 == statusCode else GetParticleType(pdgId)
+                    oneParticle = Particle(
+                        i,  # index
+                        pdgId,  # PGD
+                        particleType,  # Particle Type
+                        ParticleStatus.Invisible if ParticleType.Missing == particleType else ParticleStatus(statusCode),  # Status
+                        LorentzVector(float(part_data[9]), float(part_data[6]), float(part_data[7]), float(part_data[8])),  # Momentum
+                        float(part_data[10]),  # Mass
+                        float(part_data[11]),  # Decay Length
+                        float(part_data[12])   # Hecility
+                    )
+                    oneEvent.AddParticle(oneParticle)
+                ret.AddEvent(oneEvent)
+        elif oneBlock:
+            lines.append(nextLine)
+        nextLine = fileContent.readline()
+    return ret
+

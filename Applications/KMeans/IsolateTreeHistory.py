@@ -9,12 +9,12 @@ from UsefulFunctions import *
 
 # =============== WW 用这个 ===============
 N = 18
-csvFileName = "v3event.csv"
-saveCSVFileName = "historyv3-5.csv"
+csvFileName = "a4.csv"
+saveCSVFileName = "historya4-1.csv"
 
 dataSample = ReadCSVFile(csvFileName, 0, N + 2)
-
-loopCount = 500
+print(len(dataSample))
+loopCount = 10
 histList = [[0 for i in range(0, loopCount + 1)] for j in range(0, len(dataSample))]
 for n in range(0, loopCount):
     if 0 == n:

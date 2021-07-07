@@ -9,12 +9,12 @@ from Applications.KMeans.UsefulFunctions import *
 
 # =============== WW 用这个 ===============
 N = 18
-csvFileName = "v3event-n4.csv"
-saveCSVFileName = "resultv3-n4-1.csv"
+csvFileName = "a4.csv"
+saveCSVFileName = "res-a4-1.csv"
 
 dataSample = ReadCSVFile(csvFileName, 0, N + 2)
 
-loopCount = 800
+loopCount = 200
 for n in range(0, loopCount):
     print("==================={}===================\n".format(n))
     rootTree = IsolateTree(dataSample, N, -1)

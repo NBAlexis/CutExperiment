@@ -681,7 +681,7 @@ def SHatWW(eventSample: EventSample) -> float:
     final = final - (((1 + u) * p1.values[3] + (1 + v) * p2.values[3]) ** 2)
     final = final - ((p1.values[1] + p2.values[1] + pm.values[1]) ** 2)
     final = final - ((p1.values[2] + p2.values[2] + pm.values[2]) ** 2)
-    return abs(final)
+    return min(abs(final), 169000000.0)
 
 
 def SHatWWUV(eventSample: EventSample):

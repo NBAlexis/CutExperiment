@@ -10,7 +10,7 @@ from CutAndExport.SpecialTest import *
 from Interfaces.LHCOlympics import LoadLHCOlympics
 from Interfaces.LesHouchesEvent import LoadLesHouchesEvent
 
-os.chdir("../../_DataFolder/nTGC/")
+os.chdir("../../_DataFolder/nTGC/CLIC")
 energyHead = "5"
 
 testEventsm = LoadLHCOlympics("sm-" + energyHead + "-0.lhco")
