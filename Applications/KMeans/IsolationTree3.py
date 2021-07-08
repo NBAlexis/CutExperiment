@@ -25,8 +25,9 @@ def OneSplit(theArray, length: int):
         minV = np.min(theArray[:, idx])
         maxV = np.max(theArray[:, idx])
         midV = uniform(minV, maxV)
-        array1 = theArray[theArray[:, idx] > midV]
-        array2 = theArray[theArray[:, idx] <= midV]
+        cond = theArray[:, idx] > midV
+        array1 = theArray[cond]
+        array2 = theArray[~cond]
         array1[:, length + 2] = depth + 1
         array2[:, length + 2] = depth + 1
         l = len(array1) * len(array2)
@@ -44,8 +45,8 @@ def Split(dataArray, length: int, maxSplit: int):
     step = 1
     emptyArray = np.array([])
     while len(arrayLst) > 0 and (maxSplit < 0 or step < maxSplit):
-        if 0 == (step % 20):
-            print("-----------step:{} remaining:{} finished:{}-----------".format(step, len(arrayLst),
+        # if 0 == (step % 20):
+        print("-----------step:{} remaining:{} finished:{}-----------".format(step, len(arrayLst),
                                                                                   0 if resArray is None else len(
                                                                                       resArray)))
         nextArrayLst = []
@@ -63,34 +64,35 @@ def Split(dataArray, length: int, maxSplit: int):
                         minV = np.min(retArray[:, idx])
                         maxV = np.max(retArray[:, idx])
                         midV = uniform(minV, maxV)
-                        array1 = retArray[retArray[:, idx] > midV]
-                        array2 = retArray[retArray[:, idx] <= midV]
+                        cond = retArray[:, idx] > midV
+                        array1 = retArray[cond]
+                        array2 = retArray[~cond]
                         if 1 == len(array1):
                             array1[0, length + 2] = depth + 1
-                            array2[0, length + 2] = depth + 1
+                            array2[:, length + 2] = depth + 1
                             retArray = array2
                             if resArray is None:
                                 resArray = array1
                             else:
                                 resArray = np.append(resArray, array1, 0)
                         elif 2 == len(array1):
-                            array1[0, length + 2] = depth + 2
-                            array2[0, length + 2] = depth + 1
+                            array1[:, length + 2] = depth + 2
+                            array2[:, length + 2] = depth + 1
                             retArray = array2
                             if resArray is None:
                                 resArray = array1
                             else:
                                 resArray = np.append(resArray, array1, 0)
                         elif 3 == len(array1):
-                            array1[0, length + 2] = depth + 1
-                            array2[0, length + 2] = depth + 2
+                            array1[:, length + 2] = depth + 1
+                            array2[:, length + 2] = depth + 2
                             retArray = array1
                             if resArray is None:
                                 resArray = array2
                             else:
                                 resArray = np.append(resArray, array2, 0)
                         elif 4 == len(array1):
-                            array1[0, length + 2] = depth + 1
+                            array1[:, length + 2] = depth + 1
                             array2[0, length + 2] = depth + 1
                             retArray = array1
                             if resArray is None:
@@ -106,28 +108,26 @@ def Split(dataArray, length: int, maxSplit: int):
                         minV = np.min(retArray[:, idx])
                         maxV = np.max(retArray[:, idx])
                         midV = uniform(minV, maxV)
-                        array1 = retArray[retArray[:, idx] > midV]
-                        array2 = retArray[retArray[:, idx] <= midV]
+                        cond = retArray[:, idx] > midV
+                        array1 = retArray[cond]
+                        array2 = retArray[~cond]
                         if 1 == len(array1):
                             array1[0, length + 2] = depth + 1
-                            array2[0, length + 2] = depth + 1
+                            array2[:, length + 2] = depth + 1
                             retArray = array2
                             if resArray is None:
                                 resArray = array1
                             else:
                                 resArray = np.append(resArray, array1, 0)
                         elif 2 == len(array1):
-                            array1[0, length + 2] = depth + 2
-                            array2[0, length + 2] = depth + 2
+                            retArray[:, length + 2] = depth + 2
                             if resArray is None:
-                                resArray = array1
-                                resArray = np.append(resArray, array2, 0)
+                                resArray = np.append(resArray, retArray, 0)
                             else:
-                                resArray = np.append(resArray, array1, 0)
-                                resArray = np.append(resArray, array2, 0)
+                                resArray = np.append(resArray, retArray, 0)
                             retArray = emptyArray
                         elif 3 == len(array1):
-                            array1[0, length + 2] = depth + 1
+                            array1[:, length + 2] = depth + 1
                             array2[0, length + 2] = depth + 1
                             retArray = array1
                             if resArray is None:
@@ -172,8 +172,7 @@ def Split(dataArray, length: int, maxSplit: int):
                         # """
                     elif len(retArray) == 2:
                         depth = retArray[0, length + 2]
-                        retArray[0, length + 2] = depth + 1
-                        retArray[1, length + 2] = depth + 1
+                        retArray[:, length + 2] = depth + 1
                         if resArray is None:
                             resArray = retArray
                         else:
