@@ -2,9 +2,11 @@ import sys
 from random import randint, uniform
 import numpy as np
 
-
-def PrepareArray(dataArray):
-    return np.insert(dataArray, 0, np.arange(0, len(dataArray)), 1)
+Loop = 10
+fileName = "a4.csv"
+saveCol = [18, 19]
+saveName = "a4-hist1.csv"
+L = 18
 
 
 # Expecting N = len(-)
@@ -35,16 +37,17 @@ def OneSplit(theArray, length: int):
 
 
 def Split(dataArray, length: int, maxSplit: int):
-    dataArrayPrepared = PrepareArray(dataArray)
+    dataArrayPrepared = np.insert(dataArray, 0, np.arange(0, len(dataArray)), 1)
     dataArrayPrepared[:, length + 2] = 0
     arrayLst = [dataArrayPrepared]
     resArray = None
     step = 1
     emptyArray = np.array([])
     while len(arrayLst) > 0 and (maxSplit < 0 or step < maxSplit):
-        # if 0 == (step % 10):
-        print("-----------step:{} remaining:{} finished:{}-----------".format(step, len(arrayLst),
-                                                                              0 if resArray is None else len(resArray)))
+        if 0 == (step % 20):
+            print("-----------step:{} remaining:{} finished:{}-----------".format(step, len(arrayLst),
+                                                                                  0 if resArray is None else len(
+                                                                                      resArray)))
         nextArrayLst = []
         for toSplitArray in arrayLst:
             splitList = OneSplit(toSplitArray, length)
@@ -191,6 +194,8 @@ def Split(dataArray, length: int, maxSplit: int):
     return np.delete(resArray, 0, 1)
 
 
-dataSet = np.loadtxt("a0.csv", delimiter=',')
-resSet = Split(dataSet, 18, -1)
-np.savetxt('a0-res1.csv', resSet, delimiter=',', fmt='%.8f')
+dataSet = np.loadtxt(fileName, delimiter=',')
+for i in range(0, Loop):
+    print("======== loop {} ==========".format(i + 1))
+    resSet = Split(dataSet, L, -1)
+    np.savetxt(saveName, resSet[saveCol].astype(int), delimiter=',')
