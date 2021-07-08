@@ -5,7 +5,7 @@ import numpy as np
 Loop = 10
 fileName = "a4.csv"
 saveCol = [18, 19]
-saveName = "a4-hist1.csv"
+saveName = "a4-hist1-"
 L = 18
 
 
@@ -198,4 +198,4 @@ dataSet = np.loadtxt(fileName, delimiter=',')
 for i in range(0, Loop):
     print("======== loop {} ==========".format(i + 1))
     resSet = Split(dataSet, L, -1)
-    np.savetxt(saveName, resSet[saveCol].astype(int), delimiter=',')
+    np.savetxt(saveName + str(i) + ".csv", resSet[saveCol].astype(int), delimiter=',')
