@@ -2,10 +2,10 @@ import sys
 from random import randint, uniform
 import numpy as np
 
-Loop = 100
-fileName = "a0.csv"
+Loop = 1000
+fileName = "a4.csv"
 saveCol = [18, 19]
-saveName = "a0-hist6-"
+saveName = "a4-hist1-"
 L = 18
 
 
@@ -122,7 +122,7 @@ def Split(dataArray, length: int, maxSplit: int):
                         elif 2 == len(array1):
                             retArray[:, length + 2] = depth + 2
                             if resArray is None:
-                                resArray = np.append(resArray, retArray, 0)
+                                resArray = retArray
                             else:
                                 resArray = np.append(resArray, retArray, 0)
                             retArray = emptyArray
