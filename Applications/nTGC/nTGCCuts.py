@@ -43,6 +43,24 @@ class ParticleNumberNTGC:
         return False
 
 
+class ParticleNumberNTGCJJA:
+    """
+    Nj >= 2
+    Na >= 1
+    """
+    def Cut(self, eventSample: EventSample) -> bool:
+        photonCount = 0
+        jetCount = 0
+        for particle in eventSample.particles:
+            if ParticleType.Jet == particle.particleType:
+                jetCount += 1
+            if ParticleType.Photon == particle.particleType:
+                photonCount += 1
+        if photonCount < 1 or jetCount < 1:
+            return True
+        return False
+
+
 def DeltaR(eventSample: EventSample) -> float:
     largestLM1 = 0
     largestLM2 = 0
@@ -177,6 +195,108 @@ def DeltaRMin(eventSample: EventSample) -> float:
     return minR
 
 
+def Mjj(eventSample: EventSample) -> float:
+    jetIndex = []
+    for particle in eventSample.particles:
+        if ParticleType.Jet == particle.particleType:
+            jetIndex.append(particle.index)
+    if 2 == len(jetIndex):
+        m1 = eventSample.particles[jetIndex[0] - 1].momentum
+        m2 = eventSample.particles[jetIndex[1] - 1].momentum
+        mall = m1 + m2
+        return mall.Mass()
+    closest = -1.0
+    for i in range(0, len(jetIndex)):
+        for j in range(i + 1, len(jetIndex)):
+            m1 = eventSample.particles[jetIndex[0] - 1].momentum
+            m2 = eventSample.particles[jetIndex[1] - 1].momentum
+            mall = m1 + m2
+            mjj = mall.Mass()
+            if closest < 0.0 or abs(mjj - 91.1876) < abs(closest - 91.1876):
+                closest = mjj
+    return closest
+
+
+def MAllj(eventSample: EventSample) -> float:
+    mjj = LorentzVector(0, 0, 0, 0)
+    for particle in eventSample.particles:
+        if ParticleType.Jet == particle.particleType:
+            mjj = mjj + particle.momentum
+    return mjj.Mass()
+
+
+def MinDRaj(eventSample: EventSample) -> float:
+    jetIndex = []
+    largestPhoton = 0
+    largestPhotonIndex = 0
+    for particle in eventSample.particles:
+        if ParticleType.Photon == particle.particleType:
+            momentum = particle.momentum.Momentum()
+            if momentum > largestPhoton:
+                largestPhoton = momentum
+                largestPhotonIndex = particle.index
+        if ParticleType.Jet == particle.particleType:
+            jetIndex.append(particle.index)
+    minDRaj = -1.0
+    pa = eventSample.particles[largestPhotonIndex - 1].momentum
+    for jet in jetIndex:
+        pjet = eventSample.particles[jet - 1].momentum
+        deltaPhi = pa.Azimuth() - pjet.Azimuth()
+        if deltaPhi > 3.1415926536:
+            deltaPhi = 2 * 3.1415926536 - deltaPhi
+        if deltaPhi < -3.1415926536:
+            deltaPhi = deltaPhi + 2 * 3.1415926536
+        deltaY = pa.PseudoRapidity() - pjet.PseudoRapidity()
+        deltaRaj = math.sqrt(deltaPhi * deltaPhi + deltaY * deltaY)
+        if minDRaj < 0.0 or minDRaj > deltaRaj:
+            minDRaj = deltaRaj
+    return minDRaj
+
+
+def MaxPhiaj(eventSample: EventSample) -> float:
+    jetIndex = []
+    largestPhoton = 0
+    largestPhotonIndex = 0
+    for particle in eventSample.particles:
+        if ParticleType.Photon == particle.particleType:
+            momentum = particle.momentum.Momentum()
+            if momentum > largestPhoton:
+                largestPhoton = momentum
+                largestPhotonIndex = particle.index
+        if ParticleType.Jet == particle.particleType:
+            jetIndex.append(particle.index)
+    maxPhiAJ = -2.0
+    pa = eventSample.particles[largestPhotonIndex - 1].momentum
+    for jet in jetIndex:
+        pjet = eventSample.particles[jet - 1].momentum
+        deltaPhi = math.cos(pa.Azimuth() - pjet.Azimuth())
+        if deltaPhi > maxPhiAJ:
+            maxPhiAJ = deltaPhi
+    return maxPhiAJ
+
+
+def MaxYaj(eventSample: EventSample) -> float:
+    jetIndex = []
+    largestPhoton = 0
+    largestPhotonIndex = 0
+    for particle in eventSample.particles:
+        if ParticleType.Photon == particle.particleType:
+            momentum = particle.momentum.Momentum()
+            if momentum > largestPhoton:
+                largestPhoton = momentum
+                largestPhotonIndex = particle.index
+        if ParticleType.Jet == particle.particleType:
+            jetIndex.append(particle.index)
+    maxYAJ = -2.0
+    pa = eventSample.particles[largestPhotonIndex - 1].momentum
+    for jet in jetIndex:
+        pjet = eventSample.particles[jet - 1].momentum
+        deltaY = math.cos(pa.PseudoRapidity() - pjet.PseudoRapidity())
+        if deltaY > maxYAJ:
+            maxYAJ = deltaY
+    return maxYAJ
+
+
 class DeltaRllMin:
     def __init__(self, rValue: float):
         self.rValue = rValue
@@ -218,6 +338,36 @@ class DeltaRllMinMax:
     def Cut(self, eventSample: EventSample) -> bool:
         deltaR = DeltaR(eventSample)
         return self.min < deltaR < self.max
+
+
+class MjjMZCut:
+    def __init__(self, deltaL: float, deltaR: float, mz: float):
+        self.deltaL = deltaL
+        self.deltaR = deltaR
+        self.mz = mz
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        mj = MAllj(eventSample)
+        return mj > self.mz + self.deltaR or mj < self.mz - self.deltaR
+
+
+class DeltaAJMinMax:
+    def __init__(self, min: float, max: float):
+        self.min = min
+        self.max = max
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        deltaR = MinDRaj(eventSample)
+        return not (self.min < deltaR < self.max)
+
+
+class DeltaPhiMax:
+    def __init__(self, max: float):
+        self.max = max
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        deltaPhi = MaxPhiaj(eventSample)
+        return deltaPhi > self.max
 
 
 def ReadTXTFile(fileName: str) -> list:

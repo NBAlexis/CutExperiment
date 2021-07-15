@@ -2,10 +2,10 @@ import sys
 from random import randint, uniform
 import numpy as np
 
-Loop = 1000
+Loop = 500
 fileName = "a4.csv"
 saveCol = [18, 19]
-saveName = "a4-hist1-"
+saveName = "a4-hist2-"
 L = 18
 
 
