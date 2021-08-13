@@ -1,12 +1,13 @@
 import numpy as np
 
-saveNames = ["G:\\ifres\\original\\a0-hist1-", "G:\\ifres\\original\\a0-hist2-", "G:\\ifres\\original\\a0-hist3-", "G:\\ifres\\original\\a0-hist4-", "G:\\ifres\\original\\a0-hist5-"]
-Loop = 100
+saveNames = ["G:\\ifres\\newcomb\\a3-n4-hist-"]
+LoopStart = 0
+Loop = 5
 fileNames = []
-saveMean = False
+saveMean = True
 
 for saveName in saveNames:
-    for i in range(0, Loop):
+    for i in range(LoopStart, Loop):
         fileNames.append(saveName + str(i) + ".csv")
 
 toSave = None
@@ -15,7 +16,7 @@ toSave = None
 # """
 # history
 for i in range(0, len(fileNames)):
-    print("adding {} / {}".format(i, len(fileNames)))
+    print("adding {} : {} / {}".format(fileNames[i], i, len(fileNames)))
     dataSet = np.loadtxt(fileNames[i], delimiter=',')
     if toSave is None:
         toSave = dataSet
@@ -27,9 +28,9 @@ if saveMean:
     depthOfPoints = toSave[:, 1:toSave.shape[1]].astype(float)
     depthMean = np.mean(depthOfPoints, 1)
     meanArray = np.transpose(np.array([typeOfPoints.tolist(), depthMean.tolist()]))
-    np.savetxt("G:\\ifres\\comb\\a0-mean.csv", meanArray, delimiter=',')
+    np.savetxt("G:\\ifres\\newcomb\\a3-n4-mean.csv", meanArray, delimiter=',')
 
-np.savetxt("G:\\ifres\\comb\\a0-hist1-0-99.csv", toSave.astype(int), delimiter=',', fmt='%i')
+np.savetxt("G:\\ifres\\newcomb\\a3-n4-hist.csv", toSave.astype(int), delimiter=',', fmt='%i')
 
 # """
 

@@ -253,6 +253,84 @@ def ExportOnlyLHCO(eventSetLHCO, startIndex, endIndex, file):
         strW = strW + "\n"
         file.write(strW)
 
+
+def ExportOnlyLHCONoCut(eventSetLHCO, startIndex, endIndex, file):
+    normalizer = 1000.0
+    # result_f.write("j1x,j1y,j1z,j2x,j2y,j2z,l1x,l1y,l1z,l2x,l2y,l2z,mx,my,shat\n")
+    for i in range(startIndex, endIndex):
+        oneEvent = eventSetLHCO.events[i]
+        lepton1 = LorentzVector(0, 0, 0, 0)
+        lepton2 = LorentzVector(0, 0, 0, 0)
+        jet1 = LorentzVector(0, 0, 0, 0)
+        jet2 = LorentzVector(0, 0, 0, 0)
+        missing = LorentzVector(0, 0, 0, 0)
+        largestJetIndex1 = 0
+        largestJetM1 = 0.0
+        largestJetIndex2 = 0
+        largestJetM2 = 0.0
+        leptonIdx1 = 0
+        leptonIdx2 = 0
+        largestLepton1 = 0
+        largestLepton2 = 0
+        hasMissing = False
+        for oneParticle in oneEvent.particles:
+            if ParticleStatus.Outgoing == oneParticle.status \
+                    and ParticleType.Jet == oneParticle.particleType:
+                momentum = oneParticle.momentum.Momentum()
+                if momentum > largestJetM1:
+                    largestJetM2 = largestJetM1
+                    largestJetIndex2 = largestJetIndex1
+                    largestJetM1 = momentum
+                    largestJetIndex1 = oneParticle.index
+                elif momentum > largestJetM2:
+                    largestJetM2 = momentum
+                    largestJetIndex2 = oneParticle.index
+            elif ParticleType.Electron <= oneParticle.particleType <= ParticleType.Muon:
+                momentumLepton = oneParticle.momentum.Momentum()
+                if oneParticle.PGDid > 0 and momentumLepton > largestLepton1:
+                    leptonIdx1 = oneParticle.index
+                    largestLepton1 = momentumLepton
+                elif oneParticle.PGDid < 0 and momentumLepton > largestLepton2:
+                    leptonIdx2 = oneParticle.index
+                    largestLepton2 = momentumLepton
+            elif ParticleType.Missing == oneParticle.particleType:
+                hasMissing = True
+                missing = missing + oneParticle.momentum
+        if not (leptonIdx1 > 0 and leptonIdx2 > 0):
+            continue
+        if not (largestJetIndex1 > 0 and largestJetIndex2 > 0):
+            continue
+        if not hasMissing:
+            print(oneEvent.DebugPrint())
+            continue
+        lepton1 = oneEvent.particles[leptonIdx1 - 1].momentum
+        lepton2 = oneEvent.particles[leptonIdx2 - 1].momentum
+        jet1 = oneEvent.particles[largestJetIndex1 - 1].momentum
+        jet2 = oneEvent.particles[largestJetIndex2 - 1].momentum
+        paramLst = [jet1.values[0] / normalizer,
+                    jet1.values[1] / normalizer,
+                    jet1.values[2] / normalizer,
+                    jet1.values[3] / normalizer,
+                    jet2.values[0] / normalizer,
+                    jet2.values[1] / normalizer,
+                    jet2.values[2] / normalizer,
+                    jet2.values[3] / normalizer,
+                    lepton1.values[0] / normalizer,
+                    lepton1.values[1] / normalizer,
+                    lepton1.values[2] / normalizer,
+                    lepton1.values[3] / normalizer,
+                    lepton2.values[0] / normalizer,
+                    lepton2.values[1] / normalizer,
+                    lepton2.values[2] / normalizer,
+                    lepton2.values[3] / normalizer,
+                    missing.values[1] / normalizer,
+                    missing.values[2] / normalizer]
+        strW = ""
+        for x in range(0, 18):
+            strW = "{}{:.5e}{}".format(strW, paramLst[x], "" if 17 == x else ",")
+        strW = strW + "\n"
+        file.write(strW)
+
 """
 for i in range(0, 5):
     exportEventLHCO = LoadLHCOlympics("G://ww/samplea{}.lhco".format(i))
@@ -305,6 +383,14 @@ for i in range(0, 11):
     datafile1.close()
 """
 
+sourcefolder = "a3"
+for i in range(0, 11):
+    exportEventLHCO1 = LoadLHCOlympics("G:\\ww\\finalcs\\{}-c-{}.lhco".format(sourcefolder, i))
+    print("exporting {} - {}".format(sourcefolder, i))
+    datafile1 = open("G:\\ww\\finalcsshat\\csv\\{}-{}.csv".format(sourcefolder, i), 'w')
+    ExportOnlyLHCONoCut(exportEventLHCO1, 0, exportEventLHCO1.GetEventCount(), datafile1)
+    datafile1.close()
+
 """
 exportEventLHCO1 = LoadLHCOlympics("G://ww/ttbar1.lhco")
 exportEventLHCO2 = LoadLHCOlympics("G://ww/ttbar2.lhco")
@@ -318,7 +404,7 @@ ExportOnlyLHCO(exportEventLHCO1, 0, 2000000, datafile1)
 datafile1.close()
 """
 
-# """
+"""
 exportEventLHCOsm1 = LoadLHCOlympics("G://ww/sm1.lhco")
 exportEventLHCOsm2 = LoadLHCOlympics("G://ww/sm2.lhco")
 exportEventLHCOsm3 = LoadLHCOlympics("G://ww/sm3.lhco")
@@ -330,7 +416,7 @@ exportEventLHCOsm1.AddEventSet(exportEventLHCOsm4)
 datafile1 = open("../../_DataFolder/shat/sm.csv", 'w')
 ExportOnlyLHCO(exportEventLHCOsm1, 0, 2000000, datafile1)
 datafile1.close()
-# """
+"""
 
 """
 for i in range(0, 5):

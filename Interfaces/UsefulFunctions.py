@@ -1,5 +1,7 @@
+import math
 import re
 
+from CutAndExport.Histogram import HistogramResult
 from DataStructure.EventSet import EventSet
 from Interfaces.LHCOlympics import LoadLHCOlympics, SaveToLHCO
 
@@ -55,3 +57,16 @@ def PrintLogTxt(fileName: str):
                 lstB.append(float(contentList[2]))
     print(lstA)
     print(lstB)
+
+
+def HistogramStrict(valueList: list, minValue: float, maxValue: float, groupCount: int = 100):
+    import matplotlib.pyplot as plt
+    separate = (maxValue - minValue) / groupCount
+    listCount = [0 for i in range(groupCount)]
+    for v in valueList:
+        lstIdx = 0 if separate < 1.0e-22 else math.floor((v - minValue) / separate)
+        if 0 <= lstIdx < groupCount:
+            listCount[lstIdx] += 1
+    plt.hist(valueList, groupCount)
+    plt.show()
+    return HistogramResult(groupCount, [minValue, maxValue], listCount)

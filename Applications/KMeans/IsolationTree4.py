@@ -2,11 +2,12 @@ import sys
 from random import randint, uniform
 import numpy as np
 
-Loop = 500
-fileName = "a4.csv"
-saveCol = [18, 19]
-saveName = "a4-hist2-"
-L = 18
+LoopStart = 100
+Loop = 150
+fileName = "a03d.csv"
+saveCol = [2, 3]
+saveName = "a03d-hist-"
+L = 2
 
 
 class IsolationTree2:
@@ -143,7 +144,7 @@ def Split(dataArray, length: int, maxSplit: int):
 
 
 dataSet = np.loadtxt(fileName, delimiter=',')
-for i in range(0, Loop):
+for i in range(LoopStart, Loop):
     print("======== loop {} ==========".format(i + 1))
     resSet = Split(dataSet, L, -1)
     np.savetxt(saveName + str(i) + ".csv", resSet[:, saveCol].astype(int), delimiter=',', fmt='%i')
