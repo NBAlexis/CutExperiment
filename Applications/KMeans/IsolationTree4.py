@@ -2,12 +2,14 @@ import sys
 from random import randint, uniform
 import numpy as np
 
-LoopStart = 100
-Loop = 150
-fileName = "a03d.csv"
-saveCol = [2, 3]
-saveName = "a03d-hist-"
-L = 2
+LoopStart = 500
+Loop = 1000
+fileName = "s025-10.csv"
+saveName = "s025-10-hist-"
+L = 12
+saveCol = [L, L + 1]
+addTwoRows = True
+print(fileName)
 
 
 class IsolationTree2:
@@ -52,7 +54,8 @@ class IsolationTree2:
         list1[idx - 1] = newlim1
         list2 = self.limits.copy()
         list2[idx - 1] = newlim2
-        return [IsolationTree2(array1, self.len, self.depth + 1, list1), IsolationTree2(array2, self.len, self.depth + 1, list2)]
+        return [IsolationTree2(array1, self.len, self.depth + 1, list1),
+                IsolationTree2(array2, self.len, self.depth + 1, list2)]
 
     def MinMax(self, idx: int):
         if self.limits[idx - 1] is None:
@@ -144,6 +147,10 @@ def Split(dataArray, length: int, maxSplit: int):
 
 
 dataSet = np.loadtxt(fileName, delimiter=',')
+if addTwoRows:
+    length = len(dataSet)
+    z = np.zeros([length, 2])
+    dataSet = np.hstack((dataSet, z))
 for i in range(LoopStart, Loop):
     print("======== loop {} ==========".format(i + 1))
     resSet = Split(dataSet, L, -1)
