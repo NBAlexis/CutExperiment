@@ -1,17 +1,42 @@
-import sys
-from random import randint, uniform
+
+##################################
+# Generate test data
+##################################
+import math
+from random import uniform, randint
+
 import numpy as np
 
-LoopStart = 400
-Loop = 800
-fileName = "sm-025-1.csv"
-saveName = "sm-025-1-hist-"
-L = 12
-saveCol = [L, L + 1]
-addTwoRows = True
-print(fileName)
+from Applications.KMeans.IsolateTree import IsolateTree
+from Interfaces.UsefulFunctions import HistogramStrict
+
+datasetCount = 800
+loopCount = 10000
+testList = []
+for i in range(0, datasetCount):
+    r = uniform(-1.0, 1.0)
+    phi = uniform(0.0, 2 * math.pi)
+    x = r * math.sin(phi)
+    y = r * math.cos(phi)
+    testList.append([x, y, 0, 0, 0])
+
+##################################
+# 1000 trees for 1
+##################################
+depthtable1 = [[0 for _ in range(0, loopCount)] for _ in range(0, datasetCount)]
+for i in range(0, loopCount):
+    print("old tree ", i)
+    tree = IsolateTree(testList, 2, -2)
+    while tree.canSplit:
+        tree.Split()
+    tree.SetDepth(depthtable1, i, 0)
+
+deptharray1 = np.array(depthtable1)
+avearray1 = np.mean(deptharray1, 1)
+# print(avearray1)
 
 
+##################################
 class IsolationTree2:
 
     def __init__(self, dataArray, length: int, depth: int, limits: list):
@@ -144,14 +169,24 @@ def Split(dataArray, length: int, maxSplit: int):
     orders = np.argsort(resArray[:, 0])
     resArray = resArray[orders]
     return np.delete(resArray, 0, 1)
+##################################
 
+##################################
+# 1000 trees for 2
+##################################
+testArray = np.array(testList)
+depthtable2 = [[0 for _ in range(0, loopCount)] for _ in range(0, datasetCount)]
+deptharrray2 = np.array(depthtable2)
+for i in range(0, loopCount):
+    print("new tree ", i)
+    resSet = Split(testArray, 2, -1)
+    deptharrray2[:, i] = resSet[:, 3]
 
-dataSet = np.loadtxt(fileName, delimiter=',')
-if addTwoRows:
-    length = len(dataSet)
-    z = np.zeros([length, 2])
-    dataSet = np.hstack((dataSet, z))
-for i in range(LoopStart, Loop):
-    print("======== loop {} ==========".format(i + 1))
-    resSet = Split(dataSet, L, -1)
-    np.savetxt(saveName + str(i) + ".csv", resSet[:, saveCol].astype(int), delimiter=',', fmt='%i')
+avearray2 = np.mean(deptharrray2, 1)
+
+print(avearray1)
+print(avearray2)
+print(np.average(avearray1 - avearray2))
+HistogramStrict(list(avearray1 - avearray2), -0.2, 0.2, 50)
+print(np.max(np.abs(avearray1 - avearray2)))
+

@@ -20,7 +20,7 @@ for fileIdx in range(fileCount):
             point[N] = point[N] + point[N + 1]
     for point in dataSample:
         point[N] = point[N] / loopCount
-        if 0 == fileIdx:
+        # if 0 == fileIdx:
 
 
 SaveCSVFile("alpha2.csv", dataSample, N, N)

@@ -1,10 +1,10 @@
 import numpy as np
 
-pointset1 = "G:\\nTGCIF\\s025-6.csv"
-pointset2 = "G:\\nTGCIF\\s025-10.csv"
+pointset1 = "G:\\nTGCIF\\sm-025-0.csv"
+pointset2 = "G:\\nTGCIF\\sm-025-1.csv"
 testMax = -1
-saveIdx = "G:\\nTGCIF\\Maps\\s025-6-idx.csv"
-saveDist = "G:\\nTGCIF\\Maps\\s025-6-dist.csv"
+saveIdx = "G:\\nTGCIF\\Maps\\sm-025-0b-idx.csv"
+saveDist = "G:\\nTGCIF\\Maps\\sm-025-0b-dist.csv"
 bSaveDist = True
 
 
