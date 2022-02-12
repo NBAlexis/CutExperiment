@@ -37,3 +37,12 @@ class EventSet:
                 if not (self.events[i + idxAdd].GetJetCount() in lst):
                     del self.events[i + idxAdd]
                     idxAdd = idxAdd - 1
+
+    def RecalculateMissing(self):
+        """
+        For lepton collider, the z-direction of missing can be calculated
+        due to momentum conservation
+        :return:
+        """
+        for i in range(len(self.events)):
+            self.events[i].RecalculateMissing()

@@ -12,6 +12,29 @@ If return false, the events are preserved.
 '''
 
 
+class FunctionCut:
+
+    def __init__(self, cutFunction, cutValue: float, bRemoveLarge: bool):
+        """
+
+        :param cutFunction: float v = f(eventSample)
+        :param cutValue: the value to cut
+        :param bRemoveLarge: if true, remove f(eventSample) > cutValue, otherwise remove f(eventSample) < cutValue
+        """
+        self.cutFunction = cutFunction
+        self.cutValue = cutValue
+        self.bRemoveLarge = bRemoveLarge
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        if self.bRemoveLarge:
+            if self.cutFunction(eventSample) > self.cutValue:
+                return True
+            return False
+        if self.cutFunction(eventSample) < self.cutValue:
+            return True
+        return False
+
+
 class JetNumberCut:
     """
     If cutType = 0, cut all with jets > parameters[0]

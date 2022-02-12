@@ -61,14 +61,17 @@ class LorentzVector:
         return [self.values[1], self.values[2], self.values[3]]
 
     def MassSq(self) -> float:
-        return self.values[0] * self.values[0] - (self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
+        return self.values[0] * self.values[0] - (
+                    self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
 
     def Mass(self) -> float:
-        beforeSqrt = self.values[0] * self.values[0] - (self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
+        beforeSqrt = self.values[0] * self.values[0] - (
+                    self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
         return math.sqrt(0.0 if beforeSqrt < 0.0 else beforeSqrt)
 
     def Momentum(self) -> float:
-        return math.sqrt(self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
+        return math.sqrt(
+            self.values[1] * self.values[1] + self.values[2] * self.values[2] + self.values[3] * self.values[3])
 
     # PseudoRapidity = - log (tan(theta / 2)) \approx y
     def PseudoRapidity(self) -> float:
@@ -76,7 +79,7 @@ class LorentzVector:
         if momentum < 1.0e-12:
             return 0.0
         cs = self.values[3] / momentum
-        return -math.log(math.tan(math.acos(cs)/2))
+        return -math.log(math.tan(math.acos(cs) / 2))
 
     def R(self) -> float:
         eta = self.PseudoRapidity()
@@ -102,8 +105,9 @@ class LorentzVector:
     def ToPt(self):
         return LorentzVector(self.values[0], self.values[1], self.values[2], 0.0)
 
-    def Scale(self, scale : float):
-        return LorentzVector(self.values[0] * scale, self.values[1] * scale, self.values[2] * scale, self.values[3] * scale)
+    def Scale(self, scale: float):
+        return LorentzVector(self.values[0] * scale, self.values[1] * scale, self.values[2] * scale,
+                             self.values[3] * scale)
 
     def Et(self) -> float:
         mass = self.Mass()
@@ -111,7 +115,7 @@ class LorentzVector:
 
     # calculate phi
     def Azimuth(self) -> float:
-        return math.atan2(self.values[2],  self.values[1])
+        return math.atan2(self.values[2], self.values[1])
 
     # calculate Theta
     def Theta(self):
@@ -128,3 +132,12 @@ class LorentzVector:
                 return 0
             else:
                 return math.pi
+
+
+def DeltaPhi(v1: LorentzVector, v2: LorentzVector) -> float:
+    dot = v1.values[1] * v2.values[1] + v1.values[2] * v2.values[2]
+    l1 = v1.values[1] * v1.values[1] + v1.values[2] * v1.values[2]
+    l2 = v2.values[1] * v2.values[1] + v2.values[2] * v2.values[2]
+    if l1 > 0 and l2 > 0:
+        return math.acos(dot / math.sqrt(l1 * l2))
+    return 0

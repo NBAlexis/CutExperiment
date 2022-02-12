@@ -1,5 +1,6 @@
 import math
 
+from DataStructure.LorentzVector import LorentzVector
 from DataStructure.Particles import Particle, ParticleStatus, ParticleType
 
 
@@ -34,7 +35,7 @@ class EventSample:
                 photonCount += 1
         return photonCount
 
-    def GetPTMissing2d(self) -> float:
+    def GetPTMissing2d(self) -> list:
         ptx = 0.0
         pty = 0.0
         for particle in self.particles:
@@ -116,6 +117,27 @@ class EventSample:
                     ptx += particle.momentum.values[1]
                     pty += particle.momentum.values[2]
         return math.atan2(pty, ptx)
+
+    def RecalculateMissing(self, vSum: LorentzVector):
+        newparticle = []
+        allMomentum = LorentzVector(0, 0, 0, 0)
+        for particle in self.particles:
+            if ParticleType.Missing != particle.particleType:
+                newparticle.append(particle)
+                allMomentum = allMomentum + particle.momentum
+        missingmomentum = vSum - allMomentum
+        oneParticle = Particle(
+            len(newparticle),  # index
+            12,  # PGD
+            ParticleType.Missing,  # Particle Type
+            ParticleStatus.Invisible,  # Status
+            missingmomentum,  # Momentum
+            0.0,  # Mass
+            0.0,  # Decay Length
+            0.0  # Hecility
+        )
+        newparticle.append(oneParticle)
+        self.particles = newparticle
 
     def DebugPrint(self) -> str:
         ret = "PID  PGDID  ST  T  ---MASS(GeV)---  MOMENTUM_T(GeV)  MOMENTUM_X(GeV)  MOMENTUM_Y(GeV)  MOMENTUM_Z(GeV)  ----HECILITY---\n"
