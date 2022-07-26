@@ -9,6 +9,7 @@ class EventSample:
         self.particles = []
 
     def AddParticle(self, particle: Particle):
+        particle.index = len(self.particles) + 1
         self.particles.append(particle)
 
     def GetParticleCount(self) -> int:
@@ -123,16 +124,17 @@ class EventSample:
         allMomentum = LorentzVector(0, 0, 0, 0)
         for particle in self.particles:
             if ParticleType.Missing != particle.particleType:
+                particle.index = len(newparticle) + 1
                 newparticle.append(particle)
                 allMomentum = allMomentum + particle.momentum
         missingmomentum = vSum - allMomentum
         oneParticle = Particle(
-            len(newparticle),  # index
+            len(newparticle) + 1,  # index
             12,  # PGD
             ParticleType.Missing,  # Particle Type
             ParticleStatus.Invisible,  # Status
             missingmomentum,  # Momentum
-            0.0,  # Mass
+            0,  # Mass
             0.0,  # Decay Length
             0.0  # Hecility
         )

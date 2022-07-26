@@ -2,7 +2,7 @@ import math
 
 from DataStructure.Constants import *
 from DataStructure.EventSample import EventSample
-from DataStructure.LorentzVector import LorentzVector
+from DataStructure.LorentzVector import LorentzVector, DeltaPhi
 from DataStructure.Particles import ParticleType, ParticleStatus
 
 
@@ -238,7 +238,7 @@ def LeptonMissingDot(eventSample: EventSample) -> float:
     demon1 = (p41.values[1] + p42.values[1]) * (p41.values[1] + p42.values[1])
     demon1 = demon1 + (p41.values[2] + p42.values[2]) * (p41.values[2] + p42.values[2])
     demon2 = (missingMomentum.values[1] * missingMomentum.values[1]) + (
-                missingMomentum.values[2] * missingMomentum.values[2])
+            missingMomentum.values[2] * missingMomentum.values[2])
     num = (p41.values[1] + p42.values[1]) * missingMomentum.values[1] + (p41.values[2] + p42.values[2]) * \
           missingMomentum.values[2]
     demon1 = demon1 * demon2
@@ -272,7 +272,7 @@ def LeptonMissingAmplitude(eventSample: EventSample) -> float:
     demon1 = (p41.values[1] + p42.values[1]) * (p41.values[1] + p42.values[1])
     demon1 = demon1 + (p41.values[2] + p42.values[2]) * (p41.values[2] + p42.values[2])
     demon2 = (missingMomentum.values[1] * missingMomentum.values[1]) + (
-                missingMomentum.values[2] * missingMomentum.values[2])
+            missingMomentum.values[2] * missingMomentum.values[2])
     return abs(demon1 - demon2)
 
 
@@ -779,3 +779,25 @@ def SHatWWRealDebug(eventSample: EventSample) -> LorentzVector:
         if ParticleType.Missing == eventSample.particles[i].particleType:
             pall = pall + eventSample.particles[i].momentum
     return pall
+
+
+def MinDrll(eventSample: EventSample) -> float:
+    leptonMomentums = []
+    for particle in eventSample.particles:
+        if ParticleType.Electron == particle.particleType or ParticleType.Muon == particle.particleType:
+            leptonMomentums.append(particle.momentum)
+    if len(leptonMomentums) < 2:
+        return 0
+    mindr = -1
+    for i in range(0, len(leptonMomentums)):
+        for j in range(i + 1, len(leptonMomentums)):
+            deltaPhi = DeltaPhi(leptonMomentums[i], leptonMomentums[j])
+            eta1 = leptonMomentums[i].PseudoRapidity()
+            eta2 = leptonMomentums[j].PseudoRapidity()
+            dr = (eta1 - eta2) * (eta1 - eta2) + deltaPhi * deltaPhi
+            if dr < 0:
+                dr = 0
+            dr = math.sqrt(dr)
+            if mindr < 0 or dr < mindr:
+                mindr = dr
+    return mindr

@@ -79,7 +79,14 @@ class LorentzVector:
         if momentum < 1.0e-12:
             return 0.0
         cs = self.values[3] / momentum
-        return -math.log(math.tan(math.acos(cs) / 2))
+        if cs > 1:
+            cs = 1
+        elif cs < -1:
+            cs = -1
+        beforelog = math.tan(math.acos(cs) / 2)
+        if beforelog <= 0:
+            beforelog = 1.0e-12
+        return -math.log(beforelog)
 
     def R(self) -> float:
         eta = self.PseudoRapidity()

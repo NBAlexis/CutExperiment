@@ -30,6 +30,17 @@ def SaveCSVFile(fileName: str, content: list, startIdx: int, endIdx: int):
                         f.write(str(line[i]) + ", ")
 
 
+def SaveCSVFileA(fileName: str, content: list, startIdx: int, endIdx: int):
+    with open(fileName, 'a') as f:
+        for line in content:
+            if len(line) > endIdx:
+                for i in range(startIdx, endIdx + 1):
+                    if i == endIdx:
+                        f.write(str(line[i]) + "\n")
+                    else:
+                        f.write(str(line[i]) + ", ")
+
+
 def CombineEventsLHCO(fileNames: list, targetFileName: str):
     eventAll = EventSet()
     for fileName in fileNames:

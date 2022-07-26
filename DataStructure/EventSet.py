@@ -1,4 +1,5 @@
 from DataStructure.EventSample import EventSample
+from DataStructure.LorentzVector import LorentzVector
 
 
 class EventSet:
@@ -38,11 +39,11 @@ class EventSet:
                     del self.events[i + idxAdd]
                     idxAdd = idxAdd - 1
 
-    def RecalculateMissing(self):
+    def RecalculateMissing(self, vSum: LorentzVector):
         """
         For lepton collider, the z-direction of missing can be calculated
         due to momentum conservation
         :return:
         """
         for i in range(len(self.events)):
-            self.events[i].RecalculateMissing()
+            self.events[i].RecalculateMissing(vSum)

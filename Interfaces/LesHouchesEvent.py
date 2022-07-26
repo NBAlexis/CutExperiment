@@ -81,6 +81,21 @@ def GetParticleType(PDGid: int) -> ParticleType:
 # </event>
 
 
+def SetLeptonNTrack(pgdid: int) -> float:
+    if 11 == pgdid:
+        return -1.0
+    if 13 == pgdid:
+        return -1.0
+    if 15 == pgdid:
+        return -1.0
+    if -11 == pgdid:
+        return 1.0
+    if -13 == pgdid:
+        return 1.0
+    if -15 == pgdid:
+        return 1.0
+    return 0.0
+
 def LoadLesHouchesEvent(fileName: str) -> EventSet:
     ret = EventSet()
     tree = ElementTree.parse(fileName)
@@ -106,6 +121,7 @@ def LoadLesHouchesEvent(fileName: str) -> EventSet:
                     float(part_data[11]),  # Decay Length
                     float(part_data[12])   # Hecility
                 )
+                oneParticle.nTrack = SetLeptonNTrack(oneParticle.PGDid)
                 oneEvent.AddParticle(oneParticle)
             ret.AddEvent(oneEvent)
     return ret
@@ -146,6 +162,7 @@ def LoadLargeLesHouchesEvent(fileName: str, debugCount: bool) -> EventSet:
                         float(part_data[11]),  # Decay Length
                         float(part_data[12])   # Hecility
                     )
+                    oneParticle.nTrack = SetLeptonNTrack(oneParticle.PGDid)
                     oneEvent.AddParticle(oneParticle)
                 ret.AddEvent(oneEvent)
         elif oneBlock:

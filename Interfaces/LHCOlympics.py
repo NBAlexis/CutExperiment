@@ -95,9 +95,9 @@ def LHCOParticleTypeNumber(particleType: ParticleType) -> int:
     return 6
 
 
-def SaveToLHCO(fileName: str, event: EventSet):
+def SaveToLHCO(fileName: str, event: EventSet, realLHCO: bool = True):
     result_f = open(fileName, 'w')
-    columnLength = [4, 6, 9, 9, 8, 8, 7, 7, 8, 7, 7]
+    columnLength = [4, 6, 9, 9, 9, 9, 7, 7, 8, 7, 7]
     line = LHCOPutSpaces("#", columnLength[0])
     line = line + LHCOPutSpaces("typ", columnLength[1])
     line = line + LHCOPutSpaces("eta", columnLength[2])
@@ -118,7 +118,13 @@ def SaveToLHCO(fileName: str, event: EventSet):
         result_f.write("{}\n".format(line))
         eventIdx = eventIdx + 1
         particleIdx: int = 1
+        missingMomentum = LorentzVector(0, 0, 0, 0)
         for particle in eventSample.particles:
+            if realLHCO:
+                if particle.status != ParticleStatus.Outgoing:
+                    if particle.status == ParticleStatus.Invisible:
+                        missingMomentum = missingMomentum + particle.momentum
+                    continue
             line = LHCOPutSpaces(str(particleIdx), columnLength[0])
             particleIdx = particleIdx + 1
             line = line + LHCOPutSpaces(str(LHCOParticleTypeNumber(particle.particleType)), columnLength[1])
@@ -129,6 +135,19 @@ def SaveToLHCO(fileName: str, event: EventSet):
             line = line + LHCOPutSpaces('{:.1f}'.format(particle.nTrack), columnLength[6])
             line = line + LHCOPutSpaces('{:.1f}'.format(particle.bTag), columnLength[7])
             line = line + LHCOPutSpaces('{:.2f}'.format(particle.hadEm), columnLength[8])
+            line = line + LHCOPutSpaces('0.0', columnLength[9])
+            line = line + LHCOPutSpaces('0.0', columnLength[10])
+            result_f.write("{}\n".format(line))
+        if realLHCO:
+            line = LHCOPutSpaces(str(particleIdx), columnLength[0])
+            line = line + LHCOPutSpaces(str(LHCOParticleTypeNumber(ParticleType.Missing)), columnLength[1])
+            line = line + LHCOPutSpaces('{:.3f}'.format(missingMomentum.PseudoRapidity()), columnLength[2])
+            line = line + LHCOPutSpaces('{:.3f}'.format(missingMomentum.Azimuth()), columnLength[3])
+            line = line + LHCOPutSpaces('{:.2f}'.format(missingMomentum.Pt()), columnLength[4])
+            line = line + LHCOPutSpaces('{:.2f}'.format(missingMomentum.Mass()), columnLength[5])
+            line = line + LHCOPutSpaces('{:.1f}'.format(0), columnLength[6])
+            line = line + LHCOPutSpaces('{:.1f}'.format(0), columnLength[7])
+            line = line + LHCOPutSpaces('{:.2f}'.format(0), columnLength[8])
             line = line + LHCOPutSpaces('0.0', columnLength[9])
             line = line + LHCOPutSpaces('0.0', columnLength[10])
             result_f.write("{}\n".format(line))

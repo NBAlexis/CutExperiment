@@ -47,27 +47,27 @@ def GetS1S2T1T2(ecm: float, event: EventSample, bPrint: bool = False) -> [float,
     return [s1, s2, t1, t2, d4]
 
 
-def GetDistributin(ecm: float, events: EventSet) -> [list, list, list, list, list]:
+def GetDistributin(ecm: float, events: EventSet, printCount: int) -> [list, list, list, list, list]:
     s1 = []
     s2 = []
     t1 = []
     t2 = []
     d4 = []
-    bHasPrint = True
+    iHasPrint = 0
     for event in events.events:
-        [s1e, s2e, t1e, t2e, d4e] = GetS1S2T1T2(ecm, event, bHasPrint)
+        [s1e, s2e, t1e, t2e, d4e] = GetS1S2T1T2(ecm, event, iHasPrint < printCount)
         s1.append(s1e)
         s2.append(s2e)
         t1.append(t1e)
         t2.append(t2e)
         d4.append(d4e)
-        bHasPrint = False
+        iHasPrint = iHasPrint + 1
     return [s1, s2, t1, t2, d4]
 
 
 os.chdir("../../")
 testEvent = LoadLHCOlympics("_DataFolder/triphoton/AfterPhotonNumber/SM-1500.lhco")
-[s1l, s2l, t1l, t2l, d4l] = GetDistributin(1500, testEvent)
+[s1l, s2l, t1l, t2l, d4l] = GetDistributin(1500, testEvent, 10)
 plt.hist(s1l, 50)
 plt.show()
 plt.hist(s2l, 50)
