@@ -1,5 +1,5 @@
 # 这是一个Python基础教学2
-# 注意！ 在运行前，需要把sm-s05-1.lhco文件，放到Applications/KMeans/文件夹下
+# 注意！ 在运行前，需要把sm-s05-1.lhco文件，放到Applications/IsolationForest/文件夹下
 
 # 在这个K means用到的基础的程序，Lession1就是全部了。
 # 但是，除了基础的以外，Python真正方便的是大量的库，我们需要用到主要4个库

@@ -1,8 +1,8 @@
 ###########################################
 # 1 - generate the event list
 ###########################################
-from Applications.KMeans.IsolateTree import IsolateTree
-from Applications.KMeans.UsefulFunctions import *
+from Applications.IsolationForest.IsolateTree import IsolateTree
+from Applications.IsolationForest.UsefulFunctions import *
 
 alphaIdx = 2
 fileCount = 11

@@ -1,6 +1,6 @@
 from CutAndExport.CutEvent import CutEvents
 from CutAndExport.CutFunctions import JetNumberCut, LeptonPMCut
-from Applications.KMeans.UsefulFunctions import *
+from Applications.IsolationForest.UsefulFunctions import *
 
 
 #########################################################

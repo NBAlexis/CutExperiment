@@ -4,8 +4,8 @@
 # point = [x1, x2, x3, ... ,xN]
 # or point = [x1, x2, x3, ... ,xN, type1]
 ###################################
-from Applications.KMeans.IsolateTree import IsolateTree
-from Applications.KMeans.UsefulFunctions import *
+from Applications.IsolationForest.IsolateTree import IsolateTree
+from Applications.IsolationForest.UsefulFunctions import *
 
 # =============== WW 用这个 ===============
 N = 18

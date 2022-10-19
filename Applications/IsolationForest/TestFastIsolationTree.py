@@ -7,7 +7,7 @@ from random import uniform, randint
 
 import numpy as np
 
-from Applications.KMeans.IsolateTree import IsolateTree
+from Applications.IsolationForest.IsolateTree import IsolateTree
 from Interfaces.UsefulFunctions import HistogramStrict
 
 datasetCount = 800

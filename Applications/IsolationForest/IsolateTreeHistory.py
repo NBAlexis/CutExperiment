@@ -4,7 +4,7 @@
 # point = [x1, x2, x3, ... ,xN]
 # or point = [x1, x2, x3, ... ,xN, type1]
 ###################################
-from Applications.KMeans.IsolateTree import IsolateTree
+from Applications.IsolationForest.IsolateTree import IsolateTree
 from UsefulFunctions import *
 
 # =============== WW 用这个 ===============
