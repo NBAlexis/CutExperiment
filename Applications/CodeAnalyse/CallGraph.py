@@ -6,7 +6,7 @@ from pycallgraph2.output import GraphvizOutput
 from CutAndExport.CutFunctions import JetNumberCut, PhotonNumberCut, LeptonPMCut, StandardVBFCut, PtMissing, MeGammaCut, \
     ThetaGammaLeptonCut, PhiGammaMissingCut, PhiLeptonMissingCut, RadiusACut
 
-os.chdir("../../_DataFolder")
+os.chdir("../../_Output")
 
 with PyCallGraph(output=GraphvizOutput()):
     cutType = 1

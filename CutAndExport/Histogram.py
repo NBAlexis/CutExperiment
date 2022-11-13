@@ -86,3 +86,24 @@ def HistogramWithMinMax(eventSet: EventSet, filterFunc, minMax, groupCount: int 
     plt.show()
     return HistogramResult(groupCount, minMax, listCount)
 
+
+def HistogramWithMinMaxList(dataList, minMax, groupCount: int = 100):
+    import matplotlib.pyplot as plt
+    valueList = []
+    valueListAll = []
+    for eventValue in dataList:
+        if minMax[1] > eventValue > minMax[0]:
+            valueList.append(eventValue)
+        valueListAll.append(eventValue)
+    separate = (minMax[1] - minMax[0]) / groupCount
+    listCount = [0 for i in range(groupCount)]
+    for v in valueList:
+        lstIdx = 0 if separate < Constants.minFloat else math.floor((v - minMax[0]) / separate)
+        if lstIdx < 0:
+            lstIdx = 0
+        if lstIdx >= groupCount:
+            lstIdx = groupCount - 1
+        listCount[lstIdx] += 1
+    plt.hist(valueListAll, groupCount)
+    plt.show()
+    return HistogramResult(groupCount, minMax, listCount)
