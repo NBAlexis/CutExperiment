@@ -5,17 +5,17 @@ from Applications.kmeans.kmeansfunctions import KMeans, CalculateDistance
 from CutAndExport.Histogram import HistogramWithMinMaxList
 
 #################################################################
-k = 80
-saveStart = 1
-saveEnd = 5
-readfileName = "FT0-15000"
+k = 50
+saveStart = 124
+saveEnd = 125
+readfileName = "SM-7000"
 
 
 #################################################################
 
 os.chdir("../../")
 dim = 12
-data = np.loadtxt("_DataFolder/kmeans/{0}.csv".format(readfileName), delimiter=',')
+data = np.loadtxt("_DataFolder/kmeans/cs/SM/{0}.csv".format(readfileName), delimiter=',')
 
 averageDistance = []
 for i in range(0, saveEnd - saveStart + 1):
@@ -30,6 +30,7 @@ for i in range(0, saveEnd - saveStart + 1):
     averageDistance.append(distance)
     print(i + saveStart, " finished({0}/{1})".format(i + 1, saveEnd - saveStart + 1))
 
+"""
 npAllDistance = np.array(averageDistance)
 npAllDistance = np.transpose(npAllDistance)
 npAverageDistance = np.mean(npAllDistance, axis=1)
@@ -43,3 +44,4 @@ res1 = HistogramWithMinMaxList(smDistance, [2000, 20000], 50)
 print(res1.listCount)
 res2 = HistogramWithMinMaxList(npDistance, [2000, 20000], 50)
 print(res2.listCount)
+"""

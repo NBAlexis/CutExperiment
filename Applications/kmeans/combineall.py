@@ -5,20 +5,20 @@ import numpy as np
 
 k = 50
 saveStart = 1
-saveEnd = 10
-energy = "15000"
-readfileName = "FT0"
+saveEnd = 200
+energy = "5000"
+readfileName = "FT9"
 
 
 #################################################################
 
 os.chdir("../../")
 
-for n in range(0, 11):
+for n in range(0, 21):
     allList = []
     filehead = "_DataFolder/kmeans/{0}-{1}-{2}".format(readfileName, energy, n)
     for i in range(0, saveEnd - saveStart + 1):
-        oneLine = np.loadtxt("{0}-{1}-{2}.csv".format(filehead, k, i + saveStart), delimiter=',')
+        oneLine = np.loadtxt("{0}/{1}-{2}-{3}-{4}-{5}.csv".format(filehead, readfileName, energy, k, n, i + saveStart), delimiter=',')
         allList.append(oneLine.tolist())
     print(n, " finished")
     allArray = np.array(allList)

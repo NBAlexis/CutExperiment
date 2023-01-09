@@ -3,10 +3,10 @@ import numpy as np
 
 #################################################################
 
-k = 10
+k = 50
 saveStart = 1
-saveEnd = 100
-readfileName = "FT0-15000"
+saveEnd = 200
+readfileName = "SM-1500"
 
 
 #################################################################
@@ -19,5 +19,6 @@ for i in range(0, saveEnd - saveStart + 1):
     allList.append(oneLine.tolist())
     print(i, " finished")
 
+print("saving...")
 allArray = np.array(allList)
-np.savetxt("_DataFolder/kmeans/{0}-{1}-all.csv".format(readfileName, k), allArray.astype(int), delimiter=',', fmt='%i')
+np.savetxt("_DataFolder/kmeans/kmeans/SM/{0}-{1}-all.csv".format(readfileName, k), allArray.astype(int), delimiter=',', fmt='%i')

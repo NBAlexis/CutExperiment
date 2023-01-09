@@ -5,14 +5,14 @@ from CutAndExport.Histogram import HistogramWithMinMaxList
 
 #################################################################
 k = 50
-energy = "15000"
-readfileName = "FT0"
+energy = "5000"
+readfileName = "FT9"
 
 #################################################################
 os.chdir("../../")
 dim = 12
 
-for n in range(0, 11):
+for n in range(0, 21):
     data = np.loadtxt("_DataFolder/kmeans/cs/E{0}/{1}/{1}-{0}-{2}.csv".format(energy, readfileName, n), delimiter=',')
     kmeansData = np.loadtxt("_DataFolder/kmeans/kmeans/E{0}/{1}/{1}-{0}-{2}-{3}-all.csv".format(energy, readfileName, k, n), delimiter=',')
     distanceAll = []
