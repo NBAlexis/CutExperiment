@@ -11,16 +11,16 @@ from Interfaces.LHCOlympics import LoadLHCOlympics
 from CutAndExport.CutFunctions import PhotonNumberCut
 
 iterations = 10000
-fac = 0.8
+fac = 1.0
 
 
 os.chdir("../../")
 headList = ["FT0"]
 energyList = ["1500"]
 PhotonNumberCut = PhotonNumberCut(1, [3])
-testEvent = LoadLHCOlympics("_DataFolder/triphoton/cs/FT0/FT0-1500-0.lhco")
+testEvent = LoadLHCOlympics("_DataFolder/triphoton/cs/SM-1500.lhco")
 CutEvents(testEvent, PhotonNumberCut)
-vectors1 = ChooseEventWithStrategeQ2(testEvent, len(testEvent.events), 0)
+vectors1 = ChooseEventWithStrategeQ(testEvent, len(testEvent.events), 0)
 vectors2 = NormalizeVArrayOnlyRescal(vectors1)
 
 print(len(vectors1))
@@ -28,7 +28,7 @@ print(len(vectors1))
 d1 = []
 d2 = []
 
-for i in range(0, 10000):
+for i in range(0, iterations):
     p1 = int(random.uniform(0.0, 1.0) * len(vectors2))
     p2 = int(random.uniform(0.0, 1.0) * len(vectors2))
     v1 = np.array(vectors2[p1])

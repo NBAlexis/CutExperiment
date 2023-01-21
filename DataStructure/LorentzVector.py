@@ -140,11 +140,22 @@ class LorentzVector:
             else:
                 return math.pi
 
+    @staticmethod
+    def DeltaPhi(v1, v2) -> float:
+        dot = v1.values[1] * v2.values[1] + v1.values[2] * v2.values[2]
+        l1 = v1.values[1] * v1.values[1] + v1.values[2] * v1.values[2]
+        l2 = v2.values[1] * v2.values[1] + v2.values[2] * v2.values[2]
+        if l1 * l2 > 1.0e-20:
+            tobeacos = dot / math.sqrt(l1 * l2)
+            if tobeacos > 1.0:
+                tobeacos = 1.0
+            elif tobeacos < -1.0:
+                tobeacos = -1.0
+            return math.acos(tobeacos)
+        return 0
 
-def DeltaPhi(v1: LorentzVector, v2: LorentzVector) -> float:
-    dot = v1.values[1] * v2.values[1] + v1.values[2] * v2.values[2]
-    l1 = v1.values[1] * v1.values[1] + v1.values[2] * v1.values[2]
-    l2 = v2.values[1] * v2.values[1] + v2.values[2] * v2.values[2]
-    if l1 > 0 and l2 > 0:
-        return math.acos(dot / math.sqrt(l1 * l2))
-    return 0
+    @staticmethod
+    def DeltaR(v1, v2) -> float:
+        deltaPhi = LorentzVector.DeltaPhi(v1, v2)
+        deltaEta = v1.PseudoRapidity() - v2.PseudoRapidity()
+        return math.sqrt(deltaPhi * deltaPhi + deltaEta * deltaEta + 1.0e-8)

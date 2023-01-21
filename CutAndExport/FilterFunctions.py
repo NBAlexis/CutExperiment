@@ -2,7 +2,7 @@ import math
 
 from DataStructure.Constants import *
 from DataStructure.EventSample import EventSample
-from DataStructure.LorentzVector import LorentzVector, DeltaPhi
+from DataStructure.LorentzVector import LorentzVector
 from DataStructure.Particles import ParticleType, ParticleStatus
 
 
@@ -791,7 +791,7 @@ def MinDrll(eventSample: EventSample) -> float:
     mindr = -1
     for i in range(0, len(leptonMomentums)):
         for j in range(i + 1, len(leptonMomentums)):
-            deltaPhi = DeltaPhi(leptonMomentums[i], leptonMomentums[j])
+            deltaPhi = LorentzVector.DeltaPhi(leptonMomentums[i], leptonMomentums[j])
             eta1 = leptonMomentums[i].PseudoRapidity()
             eta2 = leptonMomentums[j].PseudoRapidity()
             dr = (eta1 - eta2) * (eta1 - eta2) + deltaPhi * deltaPhi
