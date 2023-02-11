@@ -5,9 +5,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 k = 50
-energy = "5000"
-readfileName = "FT9"
-cutdist = 2000
+energy = "1500"
+readfileName = "FT0"
+cutdist = 750
 #################################################################
 
 os.chdir("../../")
@@ -15,7 +15,7 @@ dim = 12
 eventnumber = []
 
 for n in range(0, 21):
-    dist = np.loadtxt("_DataFolder/kmeans/distances/E{0}/{1}/{1}-{0}-{2}-{3}-meandist.csv".format(energy, readfileName, k, n), delimiter=',')
+    dist = np.loadtxt("_DataFolder/kmeans/newdistances/E{0}/{1}/{1}-{0}-{2}-{3}-meandist.csv".format(energy, readfileName, k, n), delimiter=',')
     eventnumber.append(len(dist[dist > cutdist]))
 
 print(eventnumber)
