@@ -59,6 +59,7 @@ def ChooseEventWithStrategePCAAD(allEvents: EventSet, count: int):
         idx = idx + 1
     return result
 
+
 def ZScoreStandardize(dataset1, dataset2):
     means = np.mean(dataset1, axis=0)
     stds = np.std(dataset1, axis=0)
@@ -82,6 +83,10 @@ def ManualPCA(dataset1, dataset2, k):
 
 
 def ManualPCAData(dataset1, k):
+    """
+    put in to the data-set of background, and the first k-features to be extract
+    out put the mean, std of the old features, and the eigenvector to project
+    """
     means = np.mean(dataset1, axis=0)
     stds = np.std(dataset1, axis=0)
     for i in range(0, len(dataset1[0])):
@@ -98,3 +103,13 @@ def ManualPCATransform(dataset2, means, stds, features):
         dataset2[:, i] = (dataset2[:, i] - means[i]) / stds[i]
     dataset2 = np.dot(dataset2, np.transpose(features))
     return dataset2
+
+
+def ManualPCATransform2(dataset2, means, stds, features):
+    for i in range(0, len(dataset2[0])):
+        dataset2[:, i] = (dataset2[:, i] - means[i]) / stds[i]
+    lendataset2 = np.sum(dataset2 * dataset2, axis=1)
+    dataset2 = np.dot(dataset2, np.transpose(features))
+    lendataset2 = np.tile(np.transpose(np.array([lendataset2])), len(dataset2[0]))
+    lendataset2 = lendataset2 - dataset2 * dataset2
+    return np.sqrt(lendataset2)

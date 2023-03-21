@@ -3,8 +3,6 @@ import os
 from Applications.kmeans.kmeansfunctions import ChooseEventWithStratege, SaveCSVFile
 from CutAndExport.CutEvent import CutEvents
 from CutAndExport.CutFunctions import PhotonNumberCut
-from DataStructure.EventSet import EventSet
-from DataStructure.Particles import ParticleType
 from Interfaces.LHCOlympics import LoadLHCOlympics
 
 os.chdir("../../")
