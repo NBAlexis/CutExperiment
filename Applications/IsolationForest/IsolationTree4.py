@@ -146,12 +146,16 @@ def Split(dataArray, length: int, maxSplit: int):
     return np.delete(resArray, 0, 1)
 
 
-dataSet = np.loadtxt(fileName, delimiter=',')
-if addTwoRows:
-    length = len(dataSet)
-    z = np.zeros([length, 2])
-    dataSet = np.hstack((dataSet, z))
-for i in range(LoopStart, Loop):
-    print("======== loop {} ==========".format(i + 1))
-    resSet = Split(dataSet, L, -1)
-    np.savetxt(saveName + str(i) + ".csv", resSet[:, saveCol].astype(int), delimiter=',', fmt='%i')
+if __name__ == "__main__":
+    dataSet = np.loadtxt(fileName, delimiter=',')
+
+    allDepths = []
+
+    if addTwoRows:
+        length = len(dataSet)
+        z = np.zeros([length, 2])
+        dataSet = np.hstack((dataSet, z))
+    for i in range(LoopStart, Loop):
+        print("======== loop {} ==========".format(i + 1))
+        resSet = Split(dataSet, L, -1)
+        np.savetxt(saveName + str(i) + ".csv", resSet[:, saveCol].astype(int), delimiter=',', fmt='%i')

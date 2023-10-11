@@ -72,7 +72,7 @@ class PhotonNumberCut:
     def Cut(self, eventSample: EventSample) -> bool:
         photonCount = 0
         for particle in eventSample.particles:
-            if 0 == particle.particleType:
+            if ParticleType.Photon == particle.particleType:
                 photonCount += 1
         if 0 == self.cutType:
             return photonCount > self.parameters[0]
@@ -485,3 +485,18 @@ class PhiLLMCut:
         if 0 == self.cutType:
             return pAll2 > self.cutValue
         return pAll2 < self.cutValue
+
+
+def FindHardestParticlesByType(eventSample: EventSample, particleType: ParticleType) -> list:
+    particleIndex = []
+    energyList = []
+    for particle in eventSample.particles:
+        if particleType == particle.particleType:
+            toBeInsert = 0
+            for i in range(len(particleIndex)):
+                if energyList[i] < particle.momentum.values[0]:
+                    toBeInsert = i
+                    break
+            particleIndex.insert(toBeInsert, particle.index)
+            energyList.insert(toBeInsert, particle.momentum.values[0])
+    return particleIndex
