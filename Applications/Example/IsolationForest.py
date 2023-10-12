@@ -65,9 +65,18 @@ Build 100 isolation forest trees, and find the average depth of the leaves
 """
 print(np.shape(combinedList))
 averageDepth = np.zeros(3522)
+
+averageDepthOfFirstPoint = 0
+averageDepthOfLastPoint = 0
+averageDepthListSM = []
+averageDepthListNP = []
 for i in range(100):
     resSet = Split(combinedList, 12, -1)
     averageDepth = averageDepth + resSet[:, 13]
+    averageDepthOfFirstPoint = averageDepthOfFirstPoint + resSet[0, 13]
+    averageDepthOfLastPoint = averageDepthOfLastPoint + resSet[3521, 13]
+    averageDepthListSM.append(averageDepthOfFirstPoint / (i + 1))
+    averageDepthListNP.append(averageDepthOfLastPoint / (i + 1))
 averageDepth = averageDepth / 100
 
 """
@@ -87,13 +96,18 @@ anomalyScore = np.power(2, -averageDepth / cn)
 """
 Depict the anomaly score distribution for SM and NP
 """
-plt.hist(anomalyScore[0:3500], label="SM", histtype="step", range=[min(anomalyScore), max(anomalyScore)], bins=10, density=True)
-plt.hist(anomalyScore[3500:3522], label="NP", histtype="step", range=[min(anomalyScore), max(anomalyScore)], bins=10, density=True)
-plt.legend()
+fig, ax = plt.subplots()
+ax.hist(anomalyScore[0:3500], label="SM", histtype="step", range=[min(anomalyScore), max(anomalyScore)], bins=10, density=True)
+ax.hist(anomalyScore[3500:3522], label="NP", histtype="step", range=[min(anomalyScore), max(anomalyScore)], bins=10, density=True)
+ax.legend()
+ax.set_xlabel('a', fontsize=20)
+ax.set_ylabel('1/N dN/{0:.3f}'.format((max(anomalyScore) - min(anomalyScore)) / 10), fontsize=20)
 plt.show()
 
-
-
-
-# SaveCSVFile("_DataFolder/kmeans/FT0-1500.csv", resultList)
-# print("FT0-7000.csv", " saved!")
+fig, ax = plt.subplots()
+ax.plot(averageDepthListSM, label="SM")
+ax.plot(averageDepthListNP, label="NP")
+ax.legend()
+ax.set_xlabel('number of trees', fontsize=20)
+ax.set_ylabel('average depth', fontsize=20)
+plt.show()
