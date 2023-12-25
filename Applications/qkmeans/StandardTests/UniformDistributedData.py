@@ -1,12 +1,31 @@
 import random
 import numpy as np
 
-dataCount = 100000
+dataCount = 16384
 
-p6 = [[random.uniform(-1.0, 1.0) for d in range(0, 6)] for k in range(0, dataCount)]
-p14 = [[random.uniform(-1.0, 1.0) for d in range(0, 14)] for k in range(0, dataCount)]
-p30 = [[random.uniform(-1.0, 1.0) for d in range(0, 30)] for k in range(0, dataCount)]
+folderHeader = "../../../_DataFolder/qkmeans/standard/"
 
-np.savetxt("../../../_DataFolder/qkmeans/standard/p6.csv", np.array(p6), delimiter=',')
-np.savetxt("../../../_DataFolder/qkmeans/standard/p14.csv", np.array(p14), delimiter=',')
-np.savetxt("../../../_DataFolder/qkmeans/standard/p30.csv", np.array(p30), delimiter=',')
+def generateEvents(min, max, maxd, dataNumber, folder, fileOrignal, fileNormalized):
+    p1 = np.array([[random.uniform(min, max) for _ in range(0, maxd)] for _ in range(0, dataNumber)])
+    np.savetxt(folder + fileOrignal, p1, delimiter=',')
+    d1 = np.transpose(np.array([np.sqrt(np.sum(p1 * p1, axis=1))]))
+    p2 = np.hstack((p1, d1))
+    m2 = np.mean(p2, axis=0)
+    std2 = np.std(p2, axis=0)
+    p3 = (p2 - m2) / std2
+    n3 = np.sqrt(np.sum(p3 * p3, axis=1))
+    p3 = np.transpose(p3)
+    p3 = p3 / n3
+    p3 = np.transpose(p3)
+    np.savetxt(folder + fileNormalized, p3, delimiter=',')
+
+
+generateEvents(-1.0, 1.0, 3, dataCount, folderHeader, "p3.csv", "q4.csv")
+generateEvents(-1.0, 1.0, 7, dataCount, folderHeader, "p7.csv", "q8.csv")
+generateEvents(-1.0, 1.0, 15, dataCount, folderHeader, "p15.csv", "q16.csv")
+generateEvents(-1.0, 1.0, 31, dataCount, folderHeader, "p31.csv", "q32.csv")
+generateEvents(-1.0, 1.0, 63, dataCount, folderHeader, "p63.csv", "q64.csv")
+generateEvents(-1.0, 1.0, 127, dataCount, folderHeader, "p127.csv", "q128.csv")
+generateEvents(-1.0, 1.0, 255, dataCount, folderHeader, "p255.csv", "q256.csv")
+generateEvents(-1.0, 1.0, 511, dataCount, folderHeader, "p511.csv", "q512.csv")
+generateEvents(-1.0, 1.0, 1023, dataCount, folderHeader, "p1023.csv", "q1024.csv")
