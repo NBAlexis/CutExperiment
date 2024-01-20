@@ -6,7 +6,7 @@ from Applications.mmvva.exportFunctions import findCS, selectLargestPhotons, fin
 from Interfaces.LHCOlympics import LoadLHCOlympics
 
 folder1 = "../../_DataFolder/wwaa/signal/"
-folder2 = "../../_DataFolder/wwaa/bg/"
+folder2 = "../../_DataFolder/wwaa/bg2/"
 folder3 = "../../_DataFolder/wwaa/"
 
 energies = ["3TeV", "10TeV", "14TeV", "30TeV"]
