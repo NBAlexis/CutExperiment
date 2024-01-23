@@ -24,6 +24,8 @@ trainingsetft0 = ft0data[0:500, :]
 trainingset = np.vstack((trainingsetsm, trainingsetft0))
 mintraining = np.min(trainingset, axis=0)
 maxtraining = np.max(trainingset, axis=0)
+# zscore
+stdtraining = np.std(trainingset, axis=0)
 averagetraububg = np.mean(trainingset, axis=0)
 
 # trainingset = trainingset - averagetraububg
@@ -40,38 +42,39 @@ averagetraububg = np.mean(trainingset, axis=0)
 
 
 """
-validation
+# validation
 
-validationsetsm = smdata[500:1500, :]
-validationsetft0 = ft0data[500:1500, :]
+validationsetsm = smdata[500:100500, :]
+validationsetft0 = ft0data[500:100500, :]
 
 validationset = np.vstack((validationsetsm, validationsetft0))
 validationset = validationset - averagetraububg
 validationset = 2 * validationset / (maxtraining - mintraining)
-validationset = np.hstack((validationset, np.ones((2000, 1))))
+# validationset = validationset / stdtraining
+validationset = np.hstack((validationset, np.ones((200000, 1))))
 
 afternormalize = []
-for i in range(0, 2000):
+for i in range(0, 200000):
     afternormalize.append(normalizev(validationset[i]))
 
 afternormalize = np.array(afternormalize)
 np.savetxt("validation.csv", afternormalize, delimiter=',')
 """
 
-"""
-test
-"""
-for i in range(0, 11):
-    testdata = np.loadtxt("ft0-{}.csv".format(i), delimiter=',')
-    testset = testdata[0:1000, :]
+# """
+# test
 
+for i in range(0, 21):
+    testset = np.loadtxt("ft0-{}.csv".format(i), delimiter=',')
     testset = testset - averagetraububg
     testset = 2 * testset / (maxtraining - mintraining)
-    testset = np.hstack((testset, np.ones((1000, 1))))
+    testset = np.hstack((testset, np.ones((len(testset), 1))))
 
     afternormalize = []
-    for j in range(0, 1000):
+    for j in range(0, len(testset)):
         afternormalize.append(normalizev(testset[j]))
 
     afternormalize = np.array(afternormalize)
     np.savetxt("testft0-{}.csv".format(i), afternormalize, delimiter=',')
+    print("test set ft0 - {} saved".format(i))
+# """

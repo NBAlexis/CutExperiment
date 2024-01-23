@@ -16,13 +16,19 @@ y = np.vstack((-np.ones((500, 1)), np.ones((500, 1))))
 clf = svm.SVC(kernel=my_kernel)
 clf.fit(trainingset, y)
 
-print("dual coef")
-print(clf.dual_coef_)
-print(clf.intercept_)
-aysave = np.array(clf.dual_coef_)[0].tolist()
-aysave.append(clf.intercept_[0])
-np.savetxt("ay.csv", np.array(aysave), delimiter=',')
+# print("dual coef")
+# print(clf.dual_coef_)
+# print(clf.intercept_)
 
 print("number of support vector = ", len(clf.support_))
-print(clf.support_)
-np.savetxt("sv.csv", trainingset[clf.support_], delimiter=',')
+
+sv = trainingset[clf.support_]
+w = np.dot(clf.dual_coef_, sv).flatten()
+
+lenw = np.sqrt(np.dot(w, w))
+w = w / lenw
+b = clf.intercept_ / lenw
+print(w)
+print(b)
+
+np.savetxt("wb.csv", np.array(w.tolist() + b.tolist()), delimiter=',')

@@ -58,7 +58,32 @@ def lhcoToCSV(eventSet: EventSet):
             ])
     return retlst
 
-for i in range(0, 11):
-    eventfile = LoadLHCOlympics("_DataFolder/triphoton/cs/FT0/FT0-1500-{}.lhco".format(i))
-    tobesave = np.array(lhcoToCSV(eventfile))
+def v12Tov15CSV(v12data):
+    retlst = []
+    for onerow in v12data:
+        p1 = LorentzVector(onerow[0], onerow[1], onerow[2], onerow[3])
+        p2 = LorentzVector(onerow[4], onerow[5], onerow[6], onerow[7])
+        p3 = LorentzVector(onerow[8], onerow[9], onerow[10], onerow[11])
+        retlst.append([
+            p1.values[0],
+            p2.values[0],
+            p3.values[0],
+            p1.Pt(),
+            p2.Pt(),
+            p3.Pt(),
+            p1.PseudoRapidity(),
+            p2.PseudoRapidity(),
+            p3.PseudoRapidity(),
+            LorentzVector.DeltaR(p1, p2),
+            LorentzVector.DeltaR(p1, p3),
+            LorentzVector.DeltaR(p2, p3),
+            (p1 + p2).Mass(),
+            (p1 + p3).Mass(),
+            (p2 + p3).Mass()
+        ])
+    return retlst
+
+for i in range(0, 21):
+    eventfile = np.loadtxt("_DataFolder/kmeans/cs/E1500/FT0/FT0-1500-{}.csv".format(i), delimiter=',')
+    tobesave = np.array(v12Tov15CSV(eventfile))
     np.savetxt("_DataFolder/SVM/E1500T0/ft0-{}.csv".format(i), tobesave, delimiter=',')
