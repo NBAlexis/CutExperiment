@@ -1,8 +1,6 @@
-import re
-
 import numpy as np
 
-from Applications.mmvva.exportFunctions import findCS, selectLargestPhotons, findCoff
+from Applications.MuonWWAA.exportFunctions import findCS, selectLargestPhotons, findCoff
 from Interfaces.LHCOlympics import LoadLHCOlympics
 
 folder1 = "../../_DataFolder/wwaa/signal/"
@@ -32,6 +30,26 @@ for i in range(len(energies)):
         if 0 != j:
             coeffs = findCoff(bannerToLoad, paramNames[j])
         events = LoadLHCOlympics(eventToLoad)
+        if 2 == i and 0 == j:
+            bannerToLoad2 = fileToLoad + "{}-{}-banner-2.txt".format(namesbg[j], energies[i])
+            cs2 = findCS(bannerToLoad2)
+            eventToLoad2 = fileToLoad + "{}-{}-2.lhco".format(namesbg[j], energies[i])
+            events2 = LoadLHCOlympics(eventToLoad2)
+            cs = (float(cs) * events.GetEventCount() + float(cs2) * events2.GetEventCount()) / (events.GetEventCount() + events2.GetEventCount())
+            cs = str(cs)
+            events.AddEventSet(events2)
+        if 3 == i and 0 == j:
+            cs = float(cs) * events.GetEventCount()
+            counts = events.GetEventCount()
+            for k in range(1, 6):
+                bannerToLoad2 = fileToLoad + "{}-{}-banner-{}.txt".format(namesbg[j], energies[i], k + 1)
+                cs2 = findCS(bannerToLoad2)
+                eventToLoad2 = fileToLoad + "{}-{}-{}.lhco".format(namesbg[j], energies[i], k + 1)
+                events2 = LoadLHCOlympics(eventToLoad2)
+                cs = cs + float(cs2) * events2.GetEventCount()
+                counts = counts + events2.GetEventCount()
+                events.AddEventSet(events2)
+            cs = str(cs / counts)
         n1 = len(events.events)
         csvlst = selectLargestPhotons(events, energiesnumber[i])
         n2 = len(csvlst)

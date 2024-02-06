@@ -1,9 +1,4 @@
-import re
-
-import numpy as np
-
-from Applications.mmvva.exportFunctions import findCS, selectLargestPhotons, findCoff, findLogTxt
-from Interfaces.LHCOlympics import LoadLHCOlympics
+from Applications.MuonWWAA.exportFunctions import findLogTxt
 
 folder1 = "../../_DataFolder/wwaa/crosssection/"
 folder3 = "../../_DataFolder/wwaa/"

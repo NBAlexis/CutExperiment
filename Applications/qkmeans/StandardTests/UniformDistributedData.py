@@ -1,26 +1,24 @@
 import random
 import numpy as np
 
-dataCount = 16384
+dataCount = 5000
 
 folderHeader = "../../../_DataFolder/qkmeans/standard/"
 
 def generateEvents(min, max, maxd, dataNumber, folder, fileOrignal, fileNormalized):
     p1 = np.array([[random.uniform(min, max) for _ in range(0, maxd)] for _ in range(0, dataNumber)])
     np.savetxt(folder + fileOrignal, p1, delimiter=',')
-    d1 = np.transpose(np.array([np.sqrt(np.sum(p1 * p1, axis=1))]))
-    p2 = np.hstack((p1, d1))
-    m2 = np.mean(p2, axis=0)
-    std2 = np.std(p2, axis=0)
-    p3 = (p2 - m2) / std2
-    n3 = np.sqrt(np.sum(p3 * p3, axis=1))
-    p3 = np.transpose(p3)
-    p3 = p3 / n3
+    m1 = np.mean(p1, axis=0)
+    std1 = np.std(p1, axis=0)
+    p2 = (p1 - m1) / std1
+    p2 = np.hstack((p2, np.ones((dataNumber, 1))))
+    n2 = np.sqrt(np.sum(p2 * p2, axis=1))
+    p3 = np.transpose(p2)
+    p3 = p3 / n2
     p3 = np.transpose(p3)
     np.savetxt(folder + fileNormalized, p3, delimiter=',')
 
 
-generateEvents(-1.0, 1.0, 3, dataCount, folderHeader, "p3.csv", "q4.csv")
 generateEvents(-1.0, 1.0, 7, dataCount, folderHeader, "p7.csv", "q8.csv")
 generateEvents(-1.0, 1.0, 15, dataCount, folderHeader, "p15.csv", "q16.csv")
 generateEvents(-1.0, 1.0, 31, dataCount, folderHeader, "p31.csv", "q32.csv")
