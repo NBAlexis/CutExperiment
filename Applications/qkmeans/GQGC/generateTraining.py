@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 os.chdir("../../../_DataFolder/qkmeans/gqgc/")
-
+nsm = 8192
 senergy = ["1500", "5000", "7000", "15000"]
 
 
@@ -21,16 +21,16 @@ def pickdata(v, start, end, meansall, stdall):
         np.zeros((len(v), 1)),
         np.zeros((len(v), 1))
     ))
-    return normalizDataPoints(v)
+    return np.array(normalizDataPoints(v))
 
 
-for energyIdx in range(0, 4):
+for energyIdx in range(0, 1):
     smfile = np.loadtxt("SM-" + senergy[energyIdx] + ".csv", delimiter=',')
     ft0file = np.loadtxt("FgT0-" + senergy[energyIdx] + ".csv", delimiter=',')
     datatraining = np.vstack((smfile[0:30000], ft0file[0:30000]))
     means = np.mean(datatraining, axis=0)
     stds = np.std(datatraining, axis=0)
-    datatraining = np.vstack((datatraining[0:512], datatraining[30000:30512]))
+    datatraining = np.vstack((datatraining[0:nsm], datatraining[30000:(30000 + nsm)]))
     datatraining = (datatraining - means) / stds
     datatraining = np.hstack((
         datatraining,
@@ -40,18 +40,19 @@ for energyIdx in range(0, 4):
         np.zeros((len(datatraining), 1))
     ))
     datatraining = normalizDataPoints(datatraining)
-    np.savetxt("wf/gqgcwf{}.csv".format(senergy[energyIdx]),
+    np.savetxt("wf/gqgcwf{}-{}.csv".format(senergy[energyIdx], nsm),
                datatraining, delimiter=',')
+    """
     ft1file = np.loadtxt("FgT1-" + senergy[energyIdx] + ".csv", delimiter=',')
     ft2file = np.loadtxt("FgT2-" + senergy[energyIdx] + ".csv", delimiter=',')
     ft3file = np.loadtxt("FgT3-" + senergy[energyIdx] + ".csv", delimiter=',')
-    np.savetxt("gqgctest{}-sm.csv".format(senergy[energyIdx]),
-               pickdata(smfile, 30000, 80000, means, stds), delimiter=',')
-    np.savetxt("gqgctest{}-ft0.csv".format(senergy[energyIdx]),
-               pickdata(ft0file, 30000, 80000, means, stds), delimiter=',')
-    np.savetxt("gqgctest{}-ft1.csv".format(senergy[energyIdx]),
-               pickdata(ft1file, 30000, 80000, means, stds), delimiter=',')
-    np.savetxt("gqgctest{}-ft2.csv".format(senergy[energyIdx]),
-               pickdata(ft2file, 30000, 80000, means, stds), delimiter=',')
-    np.savetxt("gqgctest{}-ft3.csv".format(senergy[energyIdx]),
-               pickdata(ft3file, 30000, 80000, means, stds), delimiter=',')
+    np.savetxt("gqgctest{}-Comb-{}.csv".format(senergy[energyIdx], nsm),
+               np.vstack((
+                   pickdata(smfile, 30000, 130000, means, stds),
+                   pickdata(ft0file, 30000, 130000, means, stds),
+                   pickdata(ft1file, 30000, 130000, means, stds),
+                   pickdata(ft2file, 30000, 130000, means, stds),
+                   pickdata(ft3file, 30000, 130000, means, stds)
+                          )),
+               delimiter=',')
+    """

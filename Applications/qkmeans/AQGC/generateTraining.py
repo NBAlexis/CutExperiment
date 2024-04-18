@@ -32,7 +32,7 @@ def pickdata(v, start, end, meansall, stdall):
     return normalizDataPoints(v)
 
 
-for energyIdx in range(0, 1):
+for energyIdx in range(0, 4):
     smfile = np.loadtxt(h2 + "SM-" + senergy[energyIdx] + ".csv", delimiter=',')
     ft0file = np.loadtxt(h2 + "FT0-" + senergy[energyIdx] + ".csv", delimiter=',')
     datatraining = np.vstack((smfile[0:128], ft0file[0:128]))
@@ -53,12 +53,12 @@ for energyIdx in range(0, 1):
     np.savetxt(h3 + "validationft0-{}.csv".format(senergy[energyIdx]),
                pickdata(ft0file, 4500, 5500, means, stds), delimiter=',')
     # """
-    numberofEventEach = 50000
+    numberofEventEach = 100000
     csfileCombin = None
     csfileCombinCreated = False
-    useCombine = False
-    # for headers in ["FT0", "FT2", "FT5", "FT7", "FT8", "FT9"]:
-    for headers in ["FT0"]:
+    useCombine = True
+    for headers in ["FT0", "FT2", "FT5", "FT7", "FT8", "FT9"]:
+    # for headers in ["FT0"]:
         for k in range(0, 21):
             print("dealing with E{}/{}/{}-{}-{}.csv".format(senergy[energyIdx], headers, headers, senergy[energyIdx], k))
             csfile = np.loadtxt(h1 + "E{}/{}/{}-{}-{}.csv".format(senergy[energyIdx], headers, headers, senergy[energyIdx], k), delimiter=',')

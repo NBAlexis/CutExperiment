@@ -81,3 +81,60 @@ def HistogramStrict(valueList: list, minValue: float, maxValue: float, groupCoun
     plt.hist(valueList, groupCount)
     plt.show()
     return HistogramResult(groupCount, [minValue, maxValue], listCount)
+
+
+def BannerReader(fileName: str, paramName: str) -> [float, float]:
+    with open(fileName) as f:
+        bannertext = f.read()
+        searchtext = re.search("""Integrated weight\s\(pb\)[\s]*\:[\s]*([\.\d+e\-]+)[\s]*""", bannertext)
+        cs = float(searchtext.group(1))
+        searchtext = re.search("""[\d]+[\s]+([\.\d+e\-]+)[\s]+\#[\s]+""" + paramName, bannertext)
+        paramv = float(searchtext.group(1))
+        return cs, paramv
+
+
+def ScanReader(fileName: str) -> [list, list]:
+    lineNumber = 0
+    lstA = []
+    lstB = []
+    with open(fileName) as f:
+        for lines in f.readlines():
+            lineNumber = lineNumber + 1
+            if 1 == lineNumber:
+                continue
+            linesrep = re.sub("[\\s]+", " ", lines)
+            contentList = linesrep.split(' ')
+            if 3 <= len(contentList):
+                lstA.append(float(contentList[1]))
+                lstB.append(float(contentList[2]))
+    return lstA, lstB
+
+
+def PrintMathematica(cont):
+    contStr = str(cont)
+    contStr = contStr.replace("e", "*^")
+    contStr = contStr.replace("[", "{")
+    contStr = contStr.replace("]", "}")
+    print(contStr)
+
+
+def coefx(l, a, b, c, s, x):
+    ax2bx = a * x * x + b * x
+    return math.sqrt(2 * l * ((ax2bx + c) * math.log(1 + ax2bx / c) - ax2bx)) - s
+
+
+def dcoefx(l, a, b, c, x):
+    xbax = x * (b + a * x)
+    inlog = 1 + xbax / c
+    return math.sqrt(l) * (b + 2 * a * x) * math.log(inlog) / math.sqrt(2 * (c + xbax) * math.log(inlog) - 2 * xbax)
+
+
+def findroot(l, a, b, c, s, xstart, eps=1e-8):
+    x = xstart
+    iterationstep = 0
+    delta = -coefx(l, a, b, c, s, x) / dcoefx(l, a, b, c, x)
+    while abs(delta) > eps and iterationstep < 10000:
+        iterationstep = iterationstep + 1
+        x = x + delta
+        delta = -coefx(l, a, b, c, s, x) / dcoefx(l, a, b, c, x)
+    return x + delta
