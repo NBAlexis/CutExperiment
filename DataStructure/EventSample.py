@@ -15,6 +15,9 @@ class EventSample:
     def GetParticleCount(self) -> int:
         return len(self.particles)
 
+    def GetParticle(self, particleIndex: int) -> Particle:
+        return self.particles[particleIndex - 1]
+
     def GetLeptonCount(self) -> int:
         leptonCount = 0
         for particle in self.particles:

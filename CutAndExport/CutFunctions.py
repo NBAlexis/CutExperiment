@@ -81,6 +81,29 @@ class PhotonNumberCut:
         return photonCount not in self.parameters
 
 
+class TauNumberCut:
+    """
+    If cutType = 0, cut all with tau > parameters[0]
+    If cutType = 1, cut all with tau < parameters[0]
+    If cutType = 2, cut all with tau not in parameters
+    """
+
+    def __init__(self, cutType: int, parameters):
+        self.cutType = cutType
+        self.parameters = parameters
+
+    def Cut(self, eventSample: EventSample) -> bool:
+        photonCount = 0
+        for particle in eventSample.particles:
+            if ParticleType.Tau == particle.particleType:
+                photonCount += 1
+        if 0 == self.cutType:
+            return photonCount > self.parameters[0]
+        if 1 == self.cutType:
+            return photonCount < self.parameters[0]
+        return photonCount not in self.parameters
+
+
 class LeptonPMCut:
     """
     If give a <0, don't check,
