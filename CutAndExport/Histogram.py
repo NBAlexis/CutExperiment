@@ -36,6 +36,12 @@ def GatherNumbers(eventSet: EventSet, filterFunc, groupCount: int = 100):
     return HistogramResult(groupCount, [minValue, maxValue], listCount)
 
 
+def EventObservables(eventSet: EventSet, filterFunc) -> list:
+    valueList = []
+    for eventSample in eventSet.events:
+        valueList.append(filterFunc(eventSample))
+    return valueList
+
 def Histogram(eventSet: EventSet, filterFunc, groupCount: int = 100):
     import matplotlib.pyplot as plt
     valueList = []

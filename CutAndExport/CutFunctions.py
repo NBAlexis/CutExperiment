@@ -510,16 +510,62 @@ class PhiLLMCut:
         return pAll2 < self.cutValue
 
 
-def FindHardestParticlesByType(eventSample: EventSample, particleType: ParticleType) -> list:
+def FindHardestParticlesByType(eventSample: EventSample, particleType: ParticleType, antiParticle: int = 0) -> list:
+    """
+    antiParticle: 0, all, 1, only pdgid>0, -1 only pdgid<0
+    """
     particleIndex = []
     energyList = []
     for particle in eventSample.particles:
         if particleType == particle.particleType:
+            if 0 != antiParticle:
+                if antiParticle > 0 > particle.PGDid:
+                    continue
+                if antiParticle < 0 < particle.PGDid:
+                    continue
             toBeInsert = 0
             for i in range(len(particleIndex)):
                 if energyList[i] < particle.momentum.values[0]:
-                    toBeInsert = i
                     break
+                toBeInsert = i + 1
+            particleIndex.insert(toBeInsert, particle.index)
+            energyList.insert(toBeInsert, particle.momentum.values[0])
+    return particleIndex
+
+
+def FindHardestParticlesByTypes(eventSample: EventSample, particleTypes: list, antiParticle: int = 0) -> list:
+    """
+    antiParticle: 0, all, 1, only pdgid>0, -1 only pdgid<0
+    """
+    particleIndex = []
+    energyList = []
+    for particle in eventSample.particles:
+        if particle.particleType in particleTypes:
+            if 0 != antiParticle:
+                if antiParticle > 0 > particle.PGDid:
+                    continue
+                if antiParticle < 0 < particle.PGDid:
+                    continue
+            toBeInsert = 0
+            for i in range(len(particleIndex)):
+                if energyList[i] < particle.momentum.values[0]:
+                    break
+                toBeInsert = i + 1
+            particleIndex.insert(toBeInsert, particle.index)
+            energyList.insert(toBeInsert, particle.momentum.values[0])
+    return particleIndex
+
+
+def FindHardestParticlesByPDGId(eventSample: EventSample, pdgid: int) -> list:
+    particleIndex = []
+    energyList = []
+    for particle in eventSample.particles:
+        if pdgid == particle.PGDid:
+            toBeInsert = 0
+            for i in range(len(particleIndex)):
+                if energyList[i] < particle.momentum.values[0]:
+                    break
+                toBeInsert = i + 1
             particleIndex.insert(toBeInsert, particle.index)
             energyList.insert(toBeInsert, particle.momentum.values[0])
     return particleIndex
