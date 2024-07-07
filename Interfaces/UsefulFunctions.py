@@ -83,6 +83,16 @@ def HistogramStrict(valueList: list, minValue: float, maxValue: float, groupCoun
     return HistogramResult(groupCount, [minValue, maxValue], listCount)
 
 
+def BannerReaderCS(fileName: str, debuginfo: bool = False) -> float:
+    with open(fileName) as f:
+        bannertext = f.read()
+        searchtext = re.search("""Integrated weight\s\(pb\)[\s]*\:[\s]*([\.\d+e\-]+)[\s]*""", bannertext)
+        cs = float(searchtext.group(1))
+        if debuginfo:
+            print(cs)
+        return cs
+
+
 def BannerReader(fileName: str, paramName: str) -> [float, float]:
     with open(fileName) as f:
         bannertext = f.read()

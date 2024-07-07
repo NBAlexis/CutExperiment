@@ -141,6 +141,20 @@ class LorentzVector:
                 return math.pi
 
     @staticmethod
+    def AngleBetween(v1, v2) -> float:
+        dot = v1.values[1] * v2.values[1] + v1.values[2] * v2.values[2] + v1.values[3] * v2.values[3]
+        l1 = v1.values[1] * v1.values[1] + v1.values[2] * v1.values[2] + v1.values[3] * v1.values[3]
+        l2 = v2.values[1] * v2.values[1] + v2.values[2] * v2.values[2] + v2.values[3] * v2.values[3]
+        if l1 * l2 > 1.0e-20:
+            tobeacos = dot / math.sqrt(l1 * l2)
+            if tobeacos > 1.0:
+                tobeacos = 1.0
+            elif tobeacos < -1.0:
+                tobeacos = -1.0
+            return math.acos(tobeacos)
+        return 0
+
+    @staticmethod
     def DeltaPhi(v1, v2) -> float:
         dot = v1.values[1] * v2.values[1] + v1.values[2] * v2.values[2]
         l1 = v1.values[1] * v1.values[1] + v1.values[2] * v1.values[2]

@@ -3,59 +3,248 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from CutAndExport.CutFunctions import FindHardestParticlesByType, FindHardestParticlesByTypes
-from DataStructure.EventSet import EventSet
-from DataStructure.LorentzVector import LorentzVector
-from DataStructure.Particles import ParticleType
-from Interfaces.LHCOlympics import LoadLHCOlympics
-
-VALIDATIONCOUNT = 30000
-
 os.chdir("../../../_DataFolder/qkmeans/jllvv/")
 
-res = np.loadtxt("wf1/validation-30000-16384-l5.csv", delimiter=',')
-s1 = res[0:VALIDATIONCOUNT]
-s2 = res[VALIDATIONCOUNT:VALIDATIONCOUNT * 2]
-s3 = res[VALIDATIONCOUNT * 2:VALIDATIONCOUNT * 3]
-s4 = res[VALIDATIONCOUNT * 3:VALIDATIONCOUNT * 4]
+# res = np.loadtxt("wf/validation-16384-l2.csv", delimiter=',')
+# res = np.loadtxt("wfv2/validation-256-ae.csv", delimiter=',')
+# res = np.loadtxt("wfv2/validation-16384-l10-1000.csv", delimiter=',')
+# res = np.loadtxt("wfv3/validationv3-16384-ae.csv", delimiter=',')
+# res = np.loadtxt("wfv7/validationv7-16384-ae.csv", delimiter=',')
+res = np.loadtxt("wfv7/validation-16384-classical-K100-P.csv", delimiter=',')
 
-l1 = s1[:, 1:4]
-l1 = np.sqrt(np.sum(l1 * l1, axis=1))
-l2 = s2[:, 1:4]
-l2 = np.sqrt(np.sum(l2 * l2, axis=1))
-l3 = s3[:, 1:4]
-l3 = np.sqrt(np.sum(l3 * l3, axis=1))
-l4 = s4[:, 1:4]
-l4 = np.sqrt(np.sum(l4 * l4, axis=1))
+# validationcounts = [10000, 10000, 10000, 10000, 10000, 7482, 10000, 1499, 152, 1304, 910, 332, 10000, 10000, 31, 2, 13, 4839, 8, 384, 2975] # v2 256
+# validationcounts = [30000, 30000, 8328, 5542, 18862, 7482, 26844, 1499, 152, 1304, 910, 332, 24356, 11663, 31, 2, 13, 4839, 8, 384, 2975] # v2 16384
+# validationcounts = [10000, 10000, 10000, 10000, 10000, 6546, 10000, 887, 141, 1256, 814, 258, 10000, 9363] # v3 256
+# validationcounts = [30000, 30000, 16262, 12277, 30000, 6546, 20075, 887, 141, 1256, 814, 258, 13628, 9363] # v3 16384
+# validationcounts = [20000, 20000, 20000, 19445, 20000, 6546, 20000, 887, 141, 1256, 814, 258, 13628, 9363] # v4 2048
+validationcounts = [30000, 30000, 13472, 16245, 12272, 30000, 6543, 20071, 887, 139, 1256, 813, 257, 13520, 9307, 22, 163, 18697] # v5 16384
+nstart = 0
+r = 0
+b = 1
+g = 2
+idx = 0
+bincount = 40
 
-plt.hist(l1, bins=50, range=[0, 1], histtype="step")
-plt.hist(l2, bins=50, range=[0, 1], histtype="step")
-plt.hist(l3, bins=50, range=[0, 1], histtype="step")
-plt.hist(l4, bins=50, range=[0, 1], histtype="step")
-plt.show()
+trainset = ["ft0", "ggwwnp", "ajllvvnp", "sm",
+            "tt", "jjllvv", "ttj", "ttjj",
+            "ttjjj", "jll", "jjll", "jjjll",
+            "jjjjll", "jlllv", "jlllvb", "ajll",
+            "ajjll", "ajllvv"]
 
-plt.hist(s1[:, 0], bins=50, range=[0, 1], histtype="step")
-plt.hist(s2[:, 0], bins=50, range=[0, 1], histtype="step")
-plt.hist(s3[:, 0], bins=50, range=[0, 1], histtype="step")
-plt.hist(s4[:, 0], bins=50, range=[0, 1], histtype="step")
+m = [14, 15, 16, 17, 18, 19, 20]
+# m = []
+for i in range(len(validationcounts)):
+    c = validationcounts[i]
+    s = res[nstart:nstart+c]
+    print(trainset[i])
+    print(c)
+    print(np.histogram(s[:, 0], bins=bincount, range=[0.1, 1])[0])
+    if r == idx:
+        plt.hist(s[:, 0], bins=bincount, range=[0, 1], histtype="step", color="red", density=True)
+    elif b == idx:
+        plt.hist(s[:, 0], bins=bincount, range=[0, 1], histtype="step", color="blue", density=True)
+    elif g == idx:
+        plt.hist(s[:, 0], bins=bincount, range=[0, 1], histtype="step", color="green", density=True)
+    elif idx in m:
+        # do nothing
+        a = 0
+    else:
+        plt.hist(s[:, 0], bins=bincount, range=[0, 1], histtype="step", color="grey", density=True)
+    nstart = nstart + c
+    idx = idx + 1
+
 plt.show()
 
 """
-plt.hist(s1[:, 1], bins=50, range=[0, 1], histtype="step")
-plt.hist(s2[:, 1], bins=50, range=[0, 1], histtype="step")
-plt.hist(s3[:, 1], bins=50, range=[0, 1], histtype="step")
-plt.hist(s4[:, 1], bins=50, range=[0, 1], histtype="step")
-plt.show()
+l-10
+ft0
+30000
+[ 534  351  439  295  458  458  263  310  387  266  392  375  283  437
+  327  357  597  463  722  577  933  650 1102 1228  860  894 1360 1438
+  946  934 1477  968 1486 1447  938 1025 1330 1261  783  649]
+ggwwnp
+30000
+[ 498  319  465  288  453  451  269  281  393  243  417  412  299  483
+  312  351  636  455  762  537  945  739 1183 1279  843  927 1397 1452
+  921  984 1446  944 1456 1439  901  918 1341 1278  707  576]
+ajllvvnp
+13472
+[134  76 111  81 113 107  80  69 126  74 131 137 108 142 125 132 267 153
+ 290 235 352 290 437 505 327 367 589 626 473 499 735 473 721 756 542 551
+ 751 801 485 501]
+sm
+16245
+[4380 2799 2461 1179 1543 1271  638  377  430  196  184  153   58   78
+   44   48   42   34   50   28   34   16   29   24   15   11   17   20
+    8    9   16   14    5    7   10    3    7    4    3    0]
+tt
+12272
+[3581 2227 2017  990 1164  859  410  282  271  112  100   62   32   35
+   18   15   22   11   18    5    4    4    9    5    3    3    3    3
+    0    2    0    1    1    0    0    1    1    1    0    0]
+jjllvv
+30000
+[8205 4969 4861 2367 2882 2039 1016  675  682  302  331  277  147  181
+   97  104  114   74  112   64   72   48   62   42   37   31   31   45
+   19   11   30   12   14   12    6    8   10    6    4    1]
+ttj
+6543
+[1973 1206 1106  560  597  437  203  139  113   38   45   38   18   17
+    9    8    6    6    3    2    3    2    2    2    1    0    1    3
+    0    2    0    0    3    0    0    0    0    0    0    0]
+ttjj
+20071
+[5836 3666 3596 1699 1920 1299  565  351  329  149  150  117   73   76
+   22   37   43   26   30   14   23    7   11   10    6    1    4    6
+    0    0    0    0    0    0    0    0    3    0    2    0]
+ttjjj
+887
+[253 146 169  70  82  60  35  12  18   6  13   6   7   5   0   1   1   0
+   2   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0]
+jll
+139
+[20 13 19  6  8 12  5  2  3  1  5  6  2  2  3  4  2  4  4  2  2  2  2  0
+  2  0  1  0  0  1  1  0  1  1  2  0  0  1  0  0]
+jjll
+1256
+[293 174 188  98 131  61  34  29  44  25  25  17   8  13  14  10  10   6
+   7   5   5   7  11   8   3   6   4   2   1   1   5   3   4   3   1   0
+   0   0   0   0]
+jjjll
+813
+[171 119 123  65  73  45  24  19  31  15  20  10   7  11   7   4   9   5
+   6   3   4   4   7   5   6   0   5   4   1   3   2   0   1   2   1   0
+   1   0   0   0]
+jjjjll
+257
+[83 29 29 16 25 15  6  3  5  4  1  8  1  2  2  2  3  2  3  3  4  1  2  3
+  0  1  2  1  0  0  0  1  0  0  0  0  0  0  0  0]
+jlllv
+13520
+[3733 2047 2313 1280 1414  952  382  254  236  117  132   97   55   54
+   53   41   46   33   35   27   35   22   29   23   11   19   11   19
+   13    8    6    8    6    5    0    1    0    3    0    0]
+jlllvb
+9307
+[2586 1578 1630  849  888  524  235  150  154   78  108   77   40   55
+   30   30   37   24   30   16   31   12   23   26   14   11   14   13
+    7    8   12    2    6    2    3    2    1    0    1    0]
+ajll
+22
+[5 5 2 0 4 0 0 0 0 0 0 1 0 1 3 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0]
+ajjll
+163
+[31 22 19 14 13 12  4  6  7  3  3  3  2  4  1  1  1  1  3  0  1  2  0  1
+  1  0  3  0  2  0  2  0  0  0  0  1  0  0  0  0]
+ajllvv
+18697
+[3895 2733 2667 1387 1684 1487  731  551  624  315  373  279  184  198
+  111  119  147   80  120   85   91   61   90   87   43   43   61   64
+   31   35   41   37   47   45   24   22   39   27   17   22]
 
-plt.hist(s1[:, 2], bins=50, range=[0, 1], histtype="step")
-plt.hist(s2[:, 2], bins=50, range=[0, 1], histtype="step")
-plt.hist(s3[:, 2], bins=50, range=[0, 1], histtype="step")
-plt.hist(s4[:, 2], bins=50, range=[0, 1], histtype="step")
-plt.show()
+Process finished with exit code 0
 
-plt.hist(s1[:, 3], bins=50, range=[0, 1], histtype="step")
-plt.hist(s2[:, 3], bins=50, range=[0, 1], histtype="step")
-plt.hist(s3[:, 3], bins=50, range=[0, 1], histtype="step")
-plt.hist(s4[:, 3], bins=50, range=[0, 1], histtype="step")
-plt.show()
+
+
+
+
+
+
+
+
+
+
+v7-ae
+
+ft0
+30000
+[   0    0    0    0    0    1    1    6   25   44  128  256  293  601
+  501  634 1162  906 1729 1323 2209 1682 2547 2927 2103 2128 3046 2517
+ 1240  828  747  231  136   36    9    2    2    0    0    0]
+ggwwnp
+30000
+[   0    0    0    0    0    1    0    4   27   44  114  240  267  551
+  444  642 1216 1075 1852 1443 2351 1654 2717 2822 2069 2081 2758 2446
+ 1194  803  751  233  153   40    7    1    0    0    0    0]
+ajllvvnp
+13472
+[   0    0    0    0    0    0    0    1    3    6   27   68   65  139
+  122  168  357  310  610  452  758  598  896  932  720  718 1145 1122
+  714  658  926  534  644  434  175   96   59   13    2    0]
+sm
+16245
+[   0    0    0    0    0   11   46  157  717  980 2450 2941 1887 2468
+ 1160  888  939  435  462  202  220   99   74   35   21   14   16   12
+    4    3    2    2    0    0    0    0    0    0    0    0]
+tt
+12272
+[   0    0    0    0    0   13   51  149  612  836 2028 2323 1432 1752
+  859  626  632  302  328  123  112   36   36   16    0    2    0    1
+    2    0    1    0    0    0    0    0    0    0    0    0]
+jjllvv
+30000
+[   0    0    0    0    3   16   97  287 1340 1788 4236 5197 3344 4093
+ 2157 1699 2044 1019 1121  536  474  211  143   88   36   25   14   16
+    8    5    0    3    0    0    0    0    0    0    0    0]
+ttj
+6543
+[   0    0    0    0    0    9   24   68  324  435 1057 1217  777  884
+  439  346  386  181  191   78   79   26   15    3    1    1    1    0
+    0    0    1    0    0    0    0    0    0    0    0    0]
+ttjj
+20071
+[   0    0    0    0    1   27   73  205 1012 1283 2973 3575 2281 2790
+ 1394 1158 1292  608  634  302  296  103   41   14    3    1    1    2
+    0    1    0    0    0    0    0    1    0    0    0    0]
+ttjjj
+887
+[  0   0   0   0   0   2   2   8  39  57 116 156  96 118  64  52  77  32
+  38   7  14   2   7   0   0   0   0   0   0   0   0   0   0   0   0   0
+   0   0   0   0]
+jll
+139
+[ 0  0  0  0  0  0  0  0  1  4  9  9 10 15 10 10 15  3 11 11 10  4  3  0
+  0  4  0  4  1  0  1  0  4  0  0  0  0  0  0  0]
+jjll
+1256
+[  0   0   0   0   0   3   0   6  30  37 114 155 144 185  94  84 110  64
+  75  27  45  22  20   7   5   3   9   4   3   3   3   3   0   1   0   0
+   0   0   0   0]
+jjjll
+813
+[  0   0   0   0   0   0   2   3  20  25  73 104  72 108  58  58  81  46
+  67  22  31  11  10   8   1   4   2   2   2   1   2   0   0   0   0   0
+   0   0   0   0]
+jjjjll
+257
+[ 0  0  0  0  0  1  1  2  6 11 23 41 23 30 14 16 32  9 12  8 12  4  8  0
+  1  0  1  1  0  0  1  0  0  0  0  0  0  0  0  0]
+jlllv
+13520
+[   0    0    0    0    1   11   59  141  652  827 1948 2342 1490 1846
+  941  731  852  462  482  245  244   97   70   41   14    8    8    3
+    2    3    0    0    0    0    0    0    0    0    0    0]
+jlllvb
+9307
+[   0    0    0    0    1    6   35   99  424  604 1315 1676 1029 1231
+  624  477  592  305  342  169  170   63   64   34   10   12   16    5
+    2    0    1    0    0    1    0    0    0    0    0    0]
+ajll
+22
+[0 0 0 0 0 0 0 0 0 1 1 4 3 1 2 1 3 1 3 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0]
+ajjll
+163
+[ 0  0  0  0  0  0  0  1  4  6 11 26 15 16 13 13 18  2  9  8  9  1  2  4
+  0  0  0  1  1  0  0  1  1  1  0  0  0  0  0  0]
+ajllvv
+18697
+[   0    0    0    0    1   13   41  134  606  941 2280 2862 2051 2668
+ 1409 1155 1295  692  788  379  410  182  217  160   69   69   80   55
+   28   26   29   19   11   11    5    8    2    0    1    0]
+
+Process finished with exit code 0
+
 """
