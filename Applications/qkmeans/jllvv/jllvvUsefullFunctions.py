@@ -525,3 +525,77 @@ def findJetAndTwoLeptonsV7(events: EventSet, missE: float, jetE: float, leptonE:
             0
         ])
     return np.array(ret)
+
+
+def findJetAndTwoLeptonsV8(events: EventSet, missE: float, jetE: float, leptonE: float, jetcount: int):
+    ret = []
+    for event in events.events:
+        jets = FindHardestParticlesByType(event, ParticleType.Jet)
+        photons = FindHardestParticlesByType(event, ParticleType.Photon)
+        lps = FindHardestParticlesByTypes(event, [ParticleType.Electron, ParticleType.Muon], 1)
+        lms = FindHardestParticlesByTypes(event, [ParticleType.Electron, ParticleType.Muon], -1)
+        mis = FindHardestParticlesByType(event, ParticleType.Missing)
+        if 0 == len(jets) or 0 == len(lps) or 0 == len(lms) or 0 == len(mis):
+            # print("indexes = {}, {}, {}, {}".format(len(jets), len(lps), len(lms), len(mis)))
+            continue
+        if len(lps) > 1 or len(lms) > 1:
+            continue
+        if len(jets) > jetcount:
+            continue
+        if len(photons) > 1:
+            continue
+        pm = event.GetParticle(mis[0]).momentum
+        if pm.values[0] < missE:
+            continue
+        pj = event.GetParticle(jets[0]).momentum
+        if pj.values[0] < jetE:
+            continue
+        plp = event.GetParticle(lps[0]).momentum
+        if plp.values[0] < leptonE:
+            continue
+        plm = event.GetParticle(lms[0]).momentum
+        if plm.values[0] < leptonE:
+            continue
+        pj2 = LorentzVector(0, 0, 0, 0)
+        pj3 = LorentzVector(0, 0, 0, 0)
+        if len(jets) > 1:
+            pj2 = event.GetParticle(jets[1]).momentum
+        if len(jets) > 2:
+            pj3 = event.GetParticle(jets[2]).momentum
+        pa = LorentzVector(0, 0, 0, 0)
+        if len(photons) > 0:
+            pa = event.GetParticle(photons[0]).momentum
+        pjall = LorentzVector(0, 0, 0, 0)
+        for jetidx in jets:
+            pjall = pjall + event.GetParticle(jetidx).momentum
+        plall = plp + plm
+        plpf = 0.0 if ParticleType.Electron == event.GetParticle(lps[0]).particleType else 1.0
+        plmf = 0.0 if ParticleType.Electron == event.GetParticle(lms[0]).particleType else 1.0
+        ret.append([
+            pj.values[0],
+            pj.Pt(),
+
+            pj2.values[0],
+            pj2.Pt(),
+
+            pj3.values[0],
+            pj3.Pt(),
+
+            plp.values[0],
+            plp.Pt(),
+
+            plm.values[0],
+            plm.Pt(),
+
+            pa.values[0],
+            pa.Pt(),
+
+            pm.Pt(),
+
+            pjall.Mass(),
+            plall.Mass(),
+
+            plpf,
+            plmf
+        ])
+    return np.array(ret)

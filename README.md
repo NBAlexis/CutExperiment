@@ -5,3 +5,5 @@ There are now several papers based on this soft-ware.
 Working on document now...
 
 yangjichong@lnnu.edu.cn
+
+Move to: https://gitee.com/NBAlexis/CutExperiment
